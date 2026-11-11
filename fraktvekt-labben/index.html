@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Fraktvekt-labben</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: fraktbrev-inspirert arbeidsflate — skjema til venstre, resultat og trailergulv til høyre; faner for Utforsk / Oppgaver / Regler */
+:root{
+  --bg:#E9EDF1; --surface:#FFFFFF; --surface-2:#F4F6F8; --ink:#14213A; --muted:#566275; --line:#CBD3DD;
+  --accent:#F2B705; --accent-ink:#14213A;
+  --c-act:#2F5D9E; --c-vol:#16806F; --c-ldm:#C8641E;
+  --wood:#C9A26B; --wood-dark:#9C7643; --ok:#2B7A4B; --bad:#BC3B26;
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1420; --surface:#161F30; --surface-2:#1C2639; --ink:#E5EAF2; --muted:#9BA7B9; --line:#2B3852;
+  --accent:#F2B705; --accent-ink:#14213A;
+  --c-act:#6E9BE0; --c-vol:#3FBFA9; --c-ldm:#F08F4A;
+  --wood:#9E7C4E; --wood-dark:#C9A26B; --ok:#5BC489; --bad:#F2795F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1420; --surface:#161F30; --surface-2:#1C2639; --ink:#E5EAF2; --muted:#9BA7B9; --line:#2B3852;
+  --accent:#F2B705; --accent-ink:#14213A;
+  --c-act:#6E9BE0; --c-vol:#3FBFA9; --c-ldm:#F08F4A;
+  --wood:#9E7C4E; --wood-dark:#C9A26B; --ok:#5BC489; --bad:#F2795F; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,4vw,40px);font-weight:800;font-stretch:75%;letter-spacing:.01em;text-transform:uppercase}
+h2{font-size:22px;font-weight:700;font-stretch:85%}
+h3{font-size:17px;font-weight:700;font-stretch:90%}
+.num,input[type=number],.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.label{font-family:var(--f-display);font-stretch:85%;font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:3px solid var(--ink);margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:14px}
+.stripe{width:44px;height:44px;flex:none;border-radius:4px;background:repeating-linear-gradient(-45deg,var(--accent) 0 8px,var(--ink) 8px 16px)}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:15px}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap}
+nav.tabs button{font:inherit;font-family:var(--f-display);font-weight:700;font-stretch:85%;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:9px 16px;border:2px solid var(--ink);background:transparent;color:var(--ink);border-radius:4px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.grid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:14px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.line{border:1px solid var(--line);border-left:6px solid var(--wood);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.line-head{display:flex;gap:8px;align-items:center}
+.line-head input{flex:1;min-width:0;font:inherit;font-weight:600;border:0;border-bottom:1px dashed var(--line);background:transparent;color:var(--ink);padding:2px 0}
+.iconbtn{font:inherit;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:4px;padding:2px 9px;cursor:pointer}
+.iconbtn:hover{color:var(--bad);border-color:var(--bad)}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.field{display:flex;flex-direction:column;gap:3px;min-width:0}
+.field label{font-size:13px;color:var(--muted)}
+.field input,.field select{font:inherit;font-size:15px;width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface-2);color:var(--ink)}
+.slider{display:grid;grid-template-columns:110px minmax(0,1fr) 84px;gap:10px;align-items:center;font-size:14px}
+.slider input[type=range]{width:100%;accent-color:var(--c-act)}
+.slider output{font-family:var(--f-mono);text-align:right;font-size:14px}
+.check{display:flex;gap:8px;align-items:center;font-size:15px;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--c-ldm)}
+.btn{font:inherit;font-family:var(--f-display);font-weight:700;font-stretch:90%;font-size:15px;letter-spacing:.03em;padding:9px 16px;border-radius:4px;border:2px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:hover{filter:brightness(1.05)}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+
+.verdict{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px}
+.big{font-family:var(--f-mono);font-weight:700;font-size:clamp(36px,6vw,54px);line-height:1}
+.pill{display:inline-block;font-family:var(--f-display);font-weight:700;font-stretch:85%;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:3px;color:#fff}
+.pill.act{background:var(--c-act)} .pill.vol{background:var(--c-vol)} .pill.ldm{background:var(--c-ldm)} .pill.mix{background:var(--muted)}
+.why{margin:10px 0 0;max-width:65ch}
+
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:150px minmax(0,1fr) 96px;gap:10px;align-items:center;font-size:14px}
+.track{height:22px;background:var(--surface-2);border-radius:3px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;transition:width .35s ease}
+.bar .v{font-family:var(--f-mono);text-align:right}
+.bar.win .name{font-weight:700}
+.bar.win .track{outline:2px solid var(--ink);outline-offset:1px}
+.bar.off{opacity:.45}
+@media (max-width:520px){.bar{grid-template-columns:96px minmax(0,1fr) 78px;font-size:13px}.slider{grid-template-columns:84px minmax(0,1fr) 70px}}
+
+.tablewrap{overflow-x:auto}
+table.calc{width:100%;border-collapse:collapse;font-size:14px}
+table.calc th,table.calc td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.calc th{font-family:var(--f-display);font-stretch:85%;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+table.calc td.r,table.calc th.r{text-align:right}
+table.calc .f{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+table.calc tr.win td{font-weight:700}
+table.calc tr.win td:first-child::before{content:"▶ ";color:var(--c-ldm)}
+table.calc tr.sum td{border-top:2px solid var(--ink);font-weight:700}
+.linetitle td{background:var(--surface-2);font-weight:700}
+
+.truckwrap{overflow-x:auto}
+.truckwrap svg{display:block;width:100%;min-width:620px;height:auto}
+svg .t-ink{fill:var(--ink)} svg .t-muted{fill:var(--muted)}
+svg .floor{fill:var(--surface-2);stroke:var(--ink);stroke-width:4}
+svg .wood{fill:var(--wood);stroke:var(--wood-dark);stroke-width:2}
+svg .stackable{fill:var(--surface);stroke:var(--c-vol);stroke-width:3;stroke-dasharray:8 5}
+svg .ldmline{stroke:var(--c-ldm);stroke-width:4;stroke-dasharray:12 8}
+svg .tick{stroke:var(--muted);stroke-width:2}
+svg .over{fill:var(--bad);opacity:.12}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:5px;border-radius:2px}
+
+/* Oppgaver */
+.taskhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:4px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;padding:6px 12px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.score{font-family:var(--f-mono);font-size:14px}
+.waybill{border:2px solid var(--ink);border-radius:4px;overflow:hidden}
+.waybill .wb-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:8px 12px;background:var(--ink);color:var(--bg);font-family:var(--f-display);font-stretch:85%;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:13px}
+.answers{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.ans{display:flex;flex-direction:column;gap:4px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2)}
+.ans label{font-size:14px;font-weight:600}
+.ans .inrow{display:flex;align-items:center;gap:6px}
+.ans input{font:inherit;font-family:var(--f-mono);width:100%;min-width:0;padding:7px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink)}
+.ans .unit{font-size:14px;color:var(--muted);min-width:28px}
+.ans.ok{border-color:var(--ok)} .ans.ok input{border-color:var(--ok)}
+.ans.bad{border-color:var(--bad)} .ans.bad input{border-color:var(--bad)}
+.fb{font-size:13px;min-height:1em}
+.ans.ok .fb{color:var(--ok)} .ans.bad .fb{color:var(--bad)}
+.banner{padding:10px 14px;border-radius:4px;font-weight:600}
+.banner.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.banner.bad{background:color-mix(in srgb,var(--bad) 13%,transparent);color:var(--bad)}
+
+/* Regler */
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.rules{grid-template-columns:minmax(0,1fr)}}
+.rule{border-top:6px solid var(--c-act)}
+.rule.vol{border-top-color:var(--c-vol)} .rule.ldm{border-top-color:var(--c-ldm)}
+.formula{font-family:var(--f-mono);font-size:14px;background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:8px 10px;margin:10px 0;overflow-x:auto}
+.prose p{margin:8px 0;max-width:65ch}
+.settings{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px}
+.ladder{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.ladder .u{background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:10px 8px;text-align:center;min-width:0}
+.ladder .val{font-family:var(--f-mono);font-weight:700;font-size:18px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.ladder .unit{font-size:13px;color:var(--muted)}
+.ladder .arr{font-family:var(--f-mono);font-size:13px;color:var(--c-vol);text-align:center;white-space:nowrap}
+.ladder .arr::after{content:" →"}
+@media (max-width:560px){.ladder{grid-template-columns:minmax(0,1fr)}.ladder .arr::after{content:" ↓"}}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="stripe" aria-hidden="true"></div>
+      <div>
+        <h1>Fraktvekt-labben</h1>
+        <p>Utforsk omregningsfaktor for gods på bil: faktisk vekt, volumvekt og lastemeter.</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-utforsk" aria-selected="true" data-view="utforsk">Utforsk</button>
+      <button role="tab" id="tab-oppgaver" aria-selected="false" data-view="oppgaver">Oppgaver</button>
+      <button role="tab" id="tab-regler" aria-selected="false" data-view="regler">Regler</button>
+    </nav>
+  </header>
+
+  <!-- UTFORSK -->
+  <section id="view-utforsk">
+    <div class="grid">
+      <div class="stack">
+        <div class="panel stack">
+          <div>
+            <div class="label">Eksempelsendinger</div>
+            <div class="chips" id="presets" style="margin-top:8px"></div>
+          </div>
+        </div>
+        <div class="panel stack">
+          <div class="label">Omregningsfaktorer</div>
+          <div class="slider"><label for="fxF">Faktor 1 :</label><input type="range" id="fxF" min="1" max="6" step="0.1"><output id="fxFo"></output></div>
+          <div class="slider"><label for="fxM3">Kg per m³</label><input type="range" id="fxM3" min="100" max="1000" step="1"><output id="fxM3o"></output></div>
+          <div class="slider"><label for="fxLdm">Kg per lastemeter</label><input type="range" id="fxLdm" min="500" max="3000" step="10"><output id="fxLdmo"></output></div>
+          <div class="chips" id="fxPresets">
+            <button class="chip" data-f="3" data-fldm="1850">Bil 1:3 (standard)</button>
+            <button class="chip" data-f="3.5">1:3,5</button>
+            <button class="chip" data-f="4">1:4</button>
+            <button class="chip" data-f="5">1:5</button>
+            <button class="chip" data-f="6">Fly 1:6</button>
+            <button class="chip" data-f="1">Sjø 1:1</button>
+          </div>
+          <p class="muted" style="font-size:13px;margin:0">Endre faktoren og se hvilken vekt som bestemmer. Faktor 1:3 betyr 1000 ÷ 3 = 333 kg per m³. Jo høyere tall etter kolon, jo lavere volumvekt. Standard for bil er 1:3 og 1850 kg per lastemeter. Fly og sjø bruker vanligvis ikke lastemeter.</p>
+        </div>
+        <div class="stack" id="lines"></div>
+        <div class="btnrow">
+          <button class="btn" id="addLine">+ Legg til varelinje</button>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="panel">
+          <div class="label">Fraktberegnende vekt</div>
+          <div class="verdict" style="margin-top:6px">
+            <span class="big" id="fbv">0 kg</span>
+            <span id="fbvPill"></span>
+          </div>
+          <p class="why" id="why"></p>
+        </div>
+
+        <div class="panel stack">
+          <h3>Volum i cm³, dm³ og m³</h3>
+          <div id="units"></div>
+        </div>
+
+        <div class="panel stack">
+          <h3>Sammenligning av vektene</h3>
+          <div class="bars" id="bars"></div>
+        </div>
+
+        <div class="panel stack">
+          <h3>Utregning steg for steg</h3>
+          <div class="tablewrap" id="steps"></div>
+        </div>
+
+        <div class="panel stack">
+          <div>
+            <h3>Trailergulvet sett ovenfra</h3>
+            <p class="muted" style="margin:4px 0 0;font-size:14px">Standard semitrailer: 13,6 m lang. Lastemeter regnes med formelen, så den stiplede streken kan avvike litt fra tegningen.</p>
+          </div>
+          <div class="truckwrap" id="truck"></div>
+          <div class="legend">
+            <span><i style="background:var(--wood)"></i>Ikke stablebart (teller lastemeter)</span>
+            <span><i style="border:2px dashed var(--c-vol)"></i>Stablebart (×n = antall i høyden)</span>
+            <span><i style="border-top:3px dashed var(--c-ldm);height:0;border-radius:0"></i>Lastemeter etter formel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPPGAVER -->
+  <section id="view-oppgaver" hidden>
+    <div class="stack">
+      <div class="panel taskhead">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <span class="label">Nivå</span>
+          <div class="seg" id="levels">
+            <button data-level="0" aria-pressed="false">0 · Volumenheter</button>
+            <button data-level="1" aria-pressed="true">1 · Volumvekt</button>
+            <button data-level="2" aria-pressed="false">2 · Lastemeter</button>
+            <button data-level="3" aria-pressed="false">3 · Blandet sending</button>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" id="varyF"> Varier omregningsfaktor (1:3 til 1:5)</label>
+        <div class="score" id="score">Riktige oppgaver: 0 av 0</div>
+      </div>
+
+      <div class="panel stack">
+        <div class="waybill">
+          <div class="wb-top"><span>Fraktbrev</span><span id="wbNo"></span></div>
+          <div class="tablewrap"><table class="calc" id="taskTable"></table></div>
+        </div>
+        <p class="muted" style="margin:0" id="taskInfo"></p>
+        <form id="taskForm" class="stack" novalidate>
+          <div class="answers" id="answers"></div>
+          <div id="taskBanner"></div>
+          <div class="btnrow">
+            <button class="btn primary" type="submit">Sjekk svar</button>
+            <button class="btn" type="button" id="showSol">Vis løsning</button>
+            <button class="btn" type="button" id="toExplore">Åpne i Utforsk</button>
+            <button class="btn" type="button" id="newTask">Ny oppgave</button>
+          </div>
+        </form>
+        <div id="solution" hidden class="stack">
+          <h3>Løsning</h3>
+          <div class="tablewrap" id="solSteps"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGLER -->
+  <section id="view-regler" hidden>
+    <div class="stack">
+      <div class="panel prose">
+        <h2>Hvorfor omregningsfaktor?</h2>
+        <p>En lastebil blir full på to måter: av vekt eller av plass. En pall med isolasjon veier lite, men fyller like mye av bilen som en pall med maling. Transportøren tar derfor betalt for den <b>fraktberegnende vekten</b>, som er den høyeste av tre vekter.</p>
+        <p>Omregningsfaktoren gjør volum og gulvplass om til kilo, slik at de kan sammenlignes med den faktiske vekten.</p>
+      </div>
+      <div class="panel prose stack">
+        <h3>Volumenheter: cm³, dm³ og m³</h3>
+        <p>1 dm = 10 cm, så 1 dm³ er en kube på 10 × 10 × 10 cm = 1000 cm³. På samme måte er 1 m³ = 10 × 10 × 10 dm³ = 1000 dm³. Hvert steg i stigen er derfor ganger eller delt på 1000. 1 dm³ er det samme som 1 liter.</p>
+        <div class="ladder"><div class="u"><div class="val">1 000 000</div><div class="unit">cm³</div></div><div class="arr">÷ 1000</div><div class="u"><div class="val">1000</div><div class="unit">dm³ (liter)</div></div><div class="arr">÷ 1000</div><div class="u"><div class="val">1</div><div class="unit">m³</div></div></div>
+        <p>Eksempel: en EUR-pall med høyde 150 cm er 120 × 80 × 150 = 1 440 000 cm³ = 1440 dm³ = 1,44 m³.</p>
+        <p class="muted">Tips: gjør cm om til meter før du ganger (120 cm = 1,2 m). Da får du svaret i m³ med en gang, og det er m³ du trenger for å regne volumvekt.</p>
+      </div>
+      <div class="panel prose stack">
+        <h3>Omregningsfaktor som enkelt tall</h3>
+        <p>Faktoren oppgis ofte som et enkelt tall, for eksempel 1:3 eller bare «3». Det betyr at 3 dm³ (3 liter) regnes som 1 kg. For å finne kg per m³ deler du 1000 på faktoren.</p>
+        <div class="formula">kg per m³ = 1000 ÷ faktor &nbsp;&nbsp;→&nbsp;&nbsp; 1000 ÷ 4 = 250 kg per m³</div>
+        <div class="tablewrap"><table class="calc">
+          <thead><tr><th>Faktor</th><th class="r">Kg per m³</th><th>Brukes typisk</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1:1</td><td class="r num">1000</td><td>Sjøfrakt</td></tr>
+            <tr><td class="num">1:3</td><td class="r num">333</td><td>Bil, standard innenlands</td></tr>
+            <tr><td class="num">1:3,5</td><td class="r num">286</td><td>Bil, avtalepris</td></tr>
+            <tr><td class="num">1:4</td><td class="r num">250</td><td>Bil, avtalepris</td></tr>
+            <tr><td class="num">1:5</td><td class="r num">200</td><td>Bil og ekspress/kurer (cm³ ÷ 5000)</td></tr>
+            <tr><td class="num">1:6</td><td class="r num">167</td><td>Fly (cm³ ÷ 6000)</td></tr>
+          </tbody>
+        </table></div>
+        <p class="muted">Jo høyere faktor, jo færre kilo blir volumet regnet som. En høy faktor er derfor gunstig for kunder som sender lett og plasskrevende gods.</p>
+      </div>
+      <div class="rules">
+        <div class="panel rule prose">
+          <h3>Faktisk vekt</h3>
+          <p>Det godset veier på vekta, inkludert pall og emballasje.</p>
+          <div class="formula">vekt per kolli × antall</div>
+        </div>
+        <div class="panel rule vol prose">
+          <h3>Volumvekt</h3>
+          <p>Brukes for lett gods som tar mye plass. Mål i meter, og gang med omregningsfaktoren.</p>
+          <div class="formula">L × B × H (m) × antall × <span class="js-fm3">333</span> kg</div>
+          <p class="muted">1 m³ regnes som <span class="js-fm3">333</span> kg (faktor 1:<span class="js-f">3</span>).</p>
+        </div>
+        <div class="panel rule ldm prose">
+          <h3>Lastemetervekt</h3>
+          <p>Brukes når godset ikke kan stables, så det tar gulvplass som ingen andre kan bruke.</p>
+          <div class="formula">L × B (m) ÷ <span class="js-br">2,4</span> × antall = ldm<br>ldm × <span class="js-fldm">1850</span> kg</div>
+          <p class="muted">1 EUR-pall (1,2 × 0,8 m) = 0,4 ldm.</p>
+        </div>
+      </div>
+      <div class="panel prose">
+        <h3>Fraktberegnende vekt</h3>
+        <div class="formula">den høyeste av faktisk vekt, volumvekt og lastemetervekt</div>
+        <p>Har sendingen flere varelinjer, regner vi ut fraktberegnende vekt for hver linje og legger dem sammen.</p>
+      </div>
+      <div class="panel prose">
+        <h3>Innstillinger for læreren</h3>
+        <p class="muted">Faktorene varierer mellom transportører og avtaler. Verdiene under er vanlige i innenlands biltransport i Norge. Endringer lagres bare i denne nettleseren.</p>
+        <div class="settings">
+          <div class="field"><label for="setF">Faktor (1 : x)</label><input type="number" id="setF" min="0.1" step="0.1"></div>
+          <div class="field"><label for="setFm3">Kg per m³</label><input type="number" id="setFm3" min="1" step="1"></div>
+          <div class="field"><label for="setFldm">Kg per lastemeter</label><input type="number" id="setFldm" min="1" step="1"></div>
+          <div class="field"><label for="setBr">Bilbredde (m)</label><input type="number" id="setBr" min="1" step="0.01"></div>
+        </div>
+        <div class="btnrow" style="margin-top:12px"><button class="btn" id="resetSet">Tilbakestill til 333 / 1850 / 2,4</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+const DEF={fm3:333,fldm:1850,br:2.4};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let S=Object.assign({},DEF,store.get('fvl-set',{}));
+
+const TYPES={eur:{navn:'EUR-pall 120×80',L:120,B:80},half:{navn:'Halvpall 80×60',L:80,B:60},ind:{navn:'Industripall 120×100',L:120,B:100},eske:{navn:'Eske 60×40',L:60,B:40},egen:{navn:'Egendefinert'}};
+
+const PRESETS=[
+ {navn:'Isolasjon på paller',lines:[{navn:'Pall med isolasjonsplater',type:'eur',n:6,L:120,B:80,H:200,kg:90,stack:false}]},
+ {navn:'Maling på paller',lines:[{navn:'Pall med maling',type:'eur',n:4,L:120,B:80,H:110,kg:650,stack:false}]},
+ {navn:'Esker med dyner',lines:[{navn:'Esker med dyner',type:'eske',n:20,L:60,B:40,H:40,kg:6,stack:true}]},
+ {navn:'Stålprofiler',lines:[{navn:'Pall med stålprofiler',type:'ind',n:3,L:120,B:100,H:70,kg:950,stack:false}]},
+ {navn:'Blandet sending',lines:[{navn:'Pall med kontorstoler',type:'eur',n:3,L:120,B:80,H:180,kg:120,stack:false},{navn:'Esker med bøker',type:'egen',n:12,L:40,B:30,H:30,kg:15,stack:true}]}
+];
+
+let lines=store.get('fvl-lines',null)||JSON.parse(JSON.stringify(PRESETS[0].lines));
+let uid=1; lines.forEach(l=>l.id=uid++);
+
+/* ---------- formatering ---------- */
+const nf=(v,d=0)=>Number(v).toLocaleString('nb-NO',{minimumFractionDigits:d,maximumFractionDigits:d});
+const kg=v=>nf(Math.round(v))+' kg';
+const fk=v=>Number(v).toLocaleString('nb-NO',{maximumFractionDigits:1});
+const fx=v=>Number(1000/v).toLocaleString('nb-NO',{maximumFractionDigits:2});
+const fmOf=f=>Math.abs(f-3)<1e-9?333:1000/f;
+const m=cm=>nf(cm/100,2).replace(/,?0+$/,'').replace(/,$/,'');
+const pnum=s=>{if(s==null)return NaN;s=String(s).trim().replace(/\s/g,'').replace(',','.');return s===''?NaN:Number(s)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NAMES={act:'Faktisk vekt',vol:'Volumvekt',ldm:'Lastemetervekt'};
+
+/* ---------- beregning ---------- */
+function calcLine(l,o=S){
+  const vol=l.L*l.B*l.H/1e6*l.n, volkg=vol*o.fm3, act=l.kg*l.n;
+  const ldm=l.stack?null:(l.L/100)*(l.B/100)/o.br*l.n, ldmkg=ldm==null?null:ldm*o.fldm;
+  let win='act',fbv=act;
+  if(volkg>fbv){win='vol';fbv=volkg}
+  if(ldmkg!=null&&ldmkg>fbv){win='ldm';fbv=ldmkg}
+  return {vol,volkg,act,ldm,ldmkg,win,fbv};
+}
+function calcAll(ls,o=S){
+  const r=ls.map(l=>calcLine(l,o));
+  const t={act:0,volkg:0,ldmkg:0,ldm:0,vol:0,fbv:0,hasLdm:false};
+  r.forEach(c=>{t.act+=c.act;t.volkg+=c.volkg;t.vol+=c.vol;t.fbv+=c.fbv;if(c.ldm!=null){t.ldm+=c.ldm;t.ldmkg+=c.ldmkg;t.hasLdm=true}});
+  const wins=[...new Set(r.map(c=>c.win))];
+  t.win=wins.length===1?wins[0]:'mix';
+  return {r,t};
+}
+
+function stepsHTML(ls,o=S){
+  const {r,t}=calcAll(ls,o);
+  let h='<table class="calc"><thead><tr><th>Vekt</th><th>Utregning</th><th class="r">Resultat</th></tr></thead><tbody>';
+  ls.forEach((l,i)=>{
+    const c=r[i];
+    if(ls.length>1)h+=`<tr class="linetitle"><td colspan="3">Linje ${i+1}: ${esc(l.navn||'Varelinje')}</td></tr>`;
+    h+=`<tr class="${c.win==='act'?'win':''}"><td>Faktisk vekt</td><td class="f">${nf(l.kg,l.kg%1?1:0)} kg × ${l.n}</td><td class="r num">${kg(c.act)}</td></tr>`;
+    h+=`<tr class="${c.win==='vol'?'win':''}"><td>Volumvekt</td><td class="f">${m(l.L)} × ${m(l.B)} × ${m(l.H)} m × ${l.n} = ${nf(c.vol,3)} m³<br>${nf(c.vol,3)} m³ × ${fk(o.fm3)} (faktor 1:${fx(o.fm3)})</td><td class="r num">${kg(c.volkg)}</td></tr>`;
+    if(c.ldm!=null)h+=`<tr class="${c.win==='ldm'?'win':''}"><td>Lastemetervekt</td><td class="f">${m(l.L)} × ${m(l.B)} m ÷ ${nf(o.br,1)} × ${l.n} = ${nf(c.ldm,2)} ldm<br>${nf(c.ldm,2)} ldm × ${o.fldm}</td><td class="r num">${kg(c.ldmkg)}</td></tr>`;
+    else h+=`<tr><td class="muted">Lastemetervekt</td><td class="f">Godset kan stables, så lastemeter brukes ikke.</td><td class="r muted">–</td></tr>`;
+    h+=`<tr class="sum"><td>Fraktberegnende${ls.length>1?' linje '+(i+1):''}</td><td class="f">Høyeste verdi: ${NAMES[c.win].toLowerCase()}</td><td class="r num">${kg(c.fbv)}</td></tr>`;
+  });
+  if(ls.length>1)h+=`<tr class="sum"><td>Sum sending</td><td class="f">${r.map(c=>nf(Math.round(c.fbv))).join(' + ')}</td><td class="r num">${kg(t.fbv)}</td></tr>`;
+  return h+'</tbody></table>';
+}
+
+/* ---------- volumenheter ---------- */
+const nfx=(v,max)=>Number(v).toLocaleString('nb-NO',{maximumFractionDigits:max});
+function ladder(cm3){
+  return `<div class="ladder"><div class="u"><div class="val">${nfx(cm3,0)}</div><div class="unit">cm³</div></div><div class="arr">÷ 1000</div><div class="u"><div class="val">${nfx(cm3/1e3,3)}</div><div class="unit">dm³ (liter)</div></div><div class="arr">÷ 1000</div><div class="u"><div class="val">${nfx(cm3/1e6,6)}</div><div class="unit">m³</div></div></div>`;
+}
+function unitsHTML(ls){
+  if(!ls.length)return '';
+  let h='';
+  if(ls.length===1){const l=ls[0],c=l.L*l.B*l.H;
+    h+=`<div class="label">Én kolli</div><p class="mono" style="margin:4px 0 8px;font-size:14px;color:var(--muted)">${l.L} × ${l.B} × ${l.H} cm = ${nfx(c,0)} cm³</p>${ladder(c)}`;
+  }
+  const tot=ls.reduce((s,l)=>s+l.L*l.B*l.H*l.n,0);
+  h+=`<div class="label" style="margin-top:14px">Hele sendingen${ls.length===1?` (${ls[0].n} kolli)`:''}</div><div style="margin-top:8px">${ladder(tot)}</div>`;
+  return h;
+}
+
+/* ---------- trailergulv ---------- */
+function truckSVG(ls){
+  const W=Math.round(S.br*100), Lt=1360, INNERH=260;
+  let x=0; const rects=[]; let tooWide=[];
+  ls.forEach((l,li)=>{
+    if(!(l.n>0&&l.L>0&&l.B>0))return;
+    const layers=l.stack?Math.max(1,Math.floor(INNERH/Math.max(l.H,1))):1;
+    let pos=Math.min(Math.ceil(l.n/layers),500), left=l.n;
+    const opts=[[l.L,l.B],[l.B,l.L]].filter(o=>o[1]<=W);
+    if(!opts.length){tooWide.push(li+1);return}
+    const best=opts.map(([len,acr])=>({len,acr,k:Math.floor(W/acr),e:Math.floor(W/acr)/len})).sort((a,b)=>b.e-a.e)[0];
+    let i=0;
+    while(i<pos){for(let j=0;j<best.k&&i<pos;j++,i++){const cnt=Math.min(layers,left);left-=cnt;rects.push({x,y:j*best.acr,w:best.len,h:best.acr,li,stack:l.stack,cnt})}x+=best.len}
+  });
+  const len=Math.max(Lt,x), pad=40, top=34, VW=len+pad*2, VH=top+W+70;
+  const {t}=calcAll(ls);
+  let s=`<svg viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Trailergulv sett ovenfra med ${rects.length} plasserte kolli"><g transform="translate(${pad},${top})">`;
+  s+=`<text class="t-muted" x="0" y="-12" font-size="20" font-family="Source Sans 3, sans-serif">◀ Front (mot bilen)</text>`;
+  s+=`<rect class="floor" x="0" y="0" width="${Lt}" height="${W}" rx="4"/>`;
+  if(x>Lt)s+=`<rect class="over" x="${Lt}" y="0" width="${x-Lt}" height="${W}"/><text x="${Lt+8}" y="-12" font-size="20" style="fill:var(--bad)" font-family="Source Sans 3, sans-serif">Får ikke plass på én trailer</text>`;
+  rects.forEach(r=>{
+    s+=`<rect class="${r.stack?'stackable':'wood'}" x="${r.x+3}" y="${r.y+3}" width="${r.w-6}" height="${r.h-6}" rx="3"/>`;
+    if(!r.stack&&r.w>40){for(let k=1;k<3;k++){const yy=r.y+3+(r.h-6)*k/3;s+=`<line x1="${r.x+6}" x2="${r.x+r.w-6}" y1="${yy}" y2="${yy}" stroke="var(--wood-dark)" stroke-width="2" opacity=".5"/>`}}
+    if(r.w>=36&&r.h>=30)s+=`<text class="t-ink" x="${r.x+r.w/2}" y="${r.y+r.h/2+7}" text-anchor="middle" font-size="${Math.min(20,r.w/3)}" font-weight="700" font-family="JetBrains Mono, monospace">${r.li+1}${r.stack&&r.cnt>1?' ×'+r.cnt:''}</text>`;
+  });
+  for(let k=0;k<=Math.floor(len/100);k++){const xx=k*100;s+=`<line class="tick" x1="${xx}" x2="${xx}" y1="${W+6}" y2="${W+(k%5?16:24)}"/>`;if(k%2===0||k===13)s+=`<text class="t-muted" x="${xx}" y="${W+44}" text-anchor="middle" font-size="18" font-family="JetBrains Mono, monospace">${k} m</text>`}
+  if(t.hasLdm&&t.ldm>0){const lx=t.ldm*100;s+=`<line class="ldmline" x1="${lx}" x2="${lx}" y1="-6" y2="${W+6}"/><rect x="${lx+6}" y="${W/2-16}" width="118" height="32" rx="4" style="fill:var(--c-ldm)"/><text x="${lx+65}" y="${W/2+7}" text-anchor="middle" font-size="19" font-weight="700" fill="#fff" font-family="JetBrains Mono, monospace">${nf(t.ldm,2)} ldm</text>`}
+  s+='</g></svg>';
+  if(tooWide.length)s+=`<p style="color:var(--bad);margin:6px 0 0">Linje ${tooWide.join(', ')} er bredere enn bilen (${nf(S.br,2)} m) og er ikke tegnet.</p>`;
+  return s;
+}
+
+/* ---------- utforsk ---------- */
+const $=id=>document.getElementById(id);
+function renderPresets(){
+  $('presets').innerHTML=PRESETS.map((p,i)=>`<button class="chip" data-p="${i}">${esc(p.navn)}</button>`).join('');
+  $('presets').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;lines=JSON.parse(JSON.stringify(PRESETS[b.dataset.p].lines));lines.forEach(l=>l.id=uid++);renderLines();update()};
+}
+function lineHTML(l,i){
+  const opt=Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${l.type===k?'selected':''}>${v.navn}</option>`).join('');
+  const id='l'+l.id;
+  const maxKg=Math.max(1000,l.kg), maxH=Math.max(260,l.H), maxN=Math.max(l.stack?60:33,l.n);
+  return `<div class="line" data-id="${l.id}" style="border-left-color:${l.stack?'var(--c-vol)':'var(--wood)'}">
+   <div class="line-head"><span class="label">${i+1}</span><input id="${id}-navn" data-k="navn" value="${esc(l.navn)}" aria-label="Beskrivelse"><button class="iconbtn" data-del aria-label="Fjern varelinje">✕</button></div>
+   <div class="fields">
+     <div class="field" style="grid-column:span 3"><label for="${id}-type">Kollitype</label><select id="${id}-type" data-k="type">${opt}</select></div>
+     <div class="field"><label for="${id}-L">Lengde (cm)</label><input type="number" id="${id}-L" data-k="L" value="${l.L}" min="1"></div>
+     <div class="field"><label for="${id}-B">Bredde (cm)</label><input type="number" id="${id}-B" data-k="B" value="${l.B}" min="1"></div>
+     <div class="field"><label for="${id}-H">Høyde (cm)</label><input type="number" id="${id}-H" data-k="H" value="${l.H}" min="1"></div>
+   </div>
+   <div class="slider"><label for="${id}-n">Antall kolli</label><input type="range" id="${id}-n" data-k="n" min="1" max="${maxN}" value="${l.n}"><output>${l.n} stk</output></div>
+   <div class="slider"><label for="${id}-Hr">Høyde</label><input type="range" id="${id}-Hr" data-k="H" min="10" max="${maxH}" step="5" value="${l.H}"><output>${l.H} cm</output></div>
+   <div class="slider"><label for="${id}-kg">Vekt per kolli</label><input type="range" id="${id}-kg" data-k="kg" min="1" max="${maxKg}" step="1" value="${l.kg}"><output>${l.kg} kg</output></div>
+   <label class="check"><input type="checkbox" id="${id}-stack" data-k="stack" ${l.stack?'checked':''}> Kan stables</label>
+   <div class="muted" style="font-size:13px" data-hint></div>
+  </div>`;
+}
+function renderLines(){
+  $('lines').innerHTML=lines.map(lineHTML).join('');
+}
+$('lines').addEventListener('input',e=>{
+  const card=e.target.closest('.line');if(!card)return;
+  const l=lines.find(x=>x.id==card.dataset.id), k=e.target.dataset.k;if(!k)return;
+  if(k==='navn')l.navn=e.target.value;
+  else if(k==='stack'){l.stack=e.target.checked;card.style.borderLeftColor=l.stack?'var(--c-vol)':'var(--wood)'}
+  else if(k==='type'){l.type=e.target.value;const t=TYPES[l.type];if(t.L){l.L=t.L;l.B=t.B;card.querySelector('[data-k=L]').value=l.L;card.querySelector('[data-k=B]').value=l.B}}
+  else{const v=pnum(e.target.value);if(!(v>0))return;l[k]=v;
+    if(k==='L'||k==='B'){l.type='egen';card.querySelector('[data-k=type]').value='egen'}
+    card.querySelectorAll(`[data-k=${k}]`).forEach(inp=>{if(inp!==e.target)inp.value=v});
+    card.querySelectorAll('.slider').forEach(sl=>{const r=sl.querySelector('input'),o=sl.querySelector('output');o.textContent=r.value+(r.dataset.k==='n'?' stk':r.dataset.k==='H'?' cm':' kg')});
+  }
+  update();
+});
+$('lines').addEventListener('click',e=>{
+  if(!e.target.closest('[data-del]'))return;
+  const card=e.target.closest('.line');lines=lines.filter(x=>x.id!=card.dataset.id);renderLines();update();
+});
+$('addLine').onclick=()=>{lines.push({id:uid++,navn:'Ny varelinje',type:'eur',n:2,L:120,B:80,H:120,kg:200,stack:false});renderLines();update()};
+
+function update(){
+  store.set('fvl-lines',lines);
+  const valid=lines.filter(l=>l.n>0&&l.L>0&&l.B>0&&l.H>0);
+  const {r,t}=calcAll(valid);
+  $('fbv').textContent=kg(t.fbv);
+  const pc={act:'act',vol:'vol',ldm:'ldm',mix:'mix'}[t.win];
+  $('fbvPill').innerHTML=valid.length?`<span class="pill ${pc}">${t.win==='mix'?'Ulik per linje':NAMES[t.win]+' bestemmer'}</span>`:'';
+  // forklaring
+  let why='';
+  if(!valid.length)why='Legg til en varelinje for å starte.';
+  else if(valid.length===1){
+    const l=valid[0],c=r[0],dens=c.act/c.vol;
+    if(c.win==='act')why=`Godset veier ${nf(dens)} kg per m³. Det er tyngre enn ${fk(S.fm3)} kg per m³ (faktor 1:${fx(S.fm3)})${c.ldm!=null?' og tyngre enn gulvplassen det tar':''}, så du betaler for den faktiske vekten.`;
+    else if(c.win==='vol')why=`Godset veier bare ${nf(dens)} kg per m³. Det er lettere enn ${fk(S.fm3)} kg per m³ (faktor 1:${fx(S.fm3)}), så du betaler for plassen det tar i bilen.`;
+    else why=`Godset kan ikke stables og tar ${nf(c.ldm,2)} lastemeter av gulvet. Plassen ingen andre kan bruke, regnes som ${kg(c.ldmkg)}.`;
+    const be=Math.max(c.volkg,c.ldmkg||0)/l.n;
+    why+=` Grense: over ${kg(be)} per kolli er det den faktiske vekten som teller.`;
+  } else why='Hver varelinje får sin egen fraktberegnende vekt. Summen av linjene er det transportøren tar betalt for.';
+  $('why').textContent=why;
+  // bars
+  const items=[['act','Faktisk vekt',t.act,'var(--c-act)'],['vol','Volumvekt',t.volkg,'var(--c-vol)'],['ldm','Lastemetervekt',t.hasLdm?t.ldmkg:0,'var(--c-ldm)']];
+  const mx=Math.max(t.fbv,...items.map(i=>i[2]),1);
+  let bh=items.map(([k,n,v,c])=>{const off=k==='ldm'&&!t.hasLdm;return `<div class="bar ${t.win===k?'win':''} ${off?'off':''}"><span class="name">${n}</span><div class="track"><div class="fill" style="width:${v/mx*100}%;background:${c}"></div></div><span class="v">${off?'–':kg(v)}</span></div>`}).join('');
+  if(valid.length>1)bh+=`<div class="bar win"><span class="name">Fraktberegnende</span><div class="track"><div class="fill" style="width:${t.fbv/mx*100}%;background:var(--ink)"></div></div><span class="v">${kg(t.fbv)}</span></div>`;
+  $('bars').innerHTML=bh;
+  $('steps').innerHTML=valid.length?stepsHTML(valid):'';
+  $('units').innerHTML=unitsHTML(valid);
+  $('truck').innerHTML=truckSVG(valid);
+}
+
+/* ---------- oppgaver ---------- */
+const CARTONS=[{navn:'Esker med dyner',L:60,B:40,H:[40,50],kg:[4,9]},{navn:'Kartonger med fliser',L:40,B:30,H:[20,20],kg:[18,26]},{navn:'Esker med lampeskjermer',L:50,B:50,H:[50,60],kg:[3,7]},{navn:'Esker med bøker',L:40,B:30,H:[30,30],kg:[12,18]},{navn:'Esker med hodeputer',L:80,B:60,H:[50,60],kg:[5,10]}];
+const PALLETS=[{navn:'Pall med isolasjonsplater',t:'eur',H:[180,220],kg:[60,140]},{navn:'Pall med maling',t:'eur',H:[90,120],kg:[450,750]},{navn:'Pall med kontorstoler',t:'eur',H:[160,200],kg:[90,160]},{navn:'Pall med stålprofiler',t:'ind',H:[60,90],kg:[700,1000]},{navn:'Halvpall med drikkevarer',t:'half',H:[100,140],kg:[250,380]},{navn:'Pall med glassvarer',t:'eur',H:[120,150],kg:[180,320]},{navn:'Pall med sengemadrasser',t:'ind',H:[200,230],kg:[70,120]}];
+const rnd=(a,b,st=1)=>Math.round((a+Math.random()*(b-a))/st)*st;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function mkCarton(stack=true){const c=pick(CARTONS);return{navn:c.navn,type:'egen',n:rnd(4,24),L:c.L,B:c.B,H:rnd(c.H[0],c.H[1],10),kg:rnd(c.kg[0],c.kg[1]),stack}}
+function mkPallet(stack){const p=pick(PALLETS),t=TYPES[p.t];return{navn:p.navn,type:p.t,n:rnd(1,8),L:t.L,B:t.B,H:rnd(p.H[0],p.H[1],10),kg:rnd(p.kg[0],p.kg[1],5),stack}}
+
+let level=1, task=null, score=store.get('fvl-score',{ok:0,tot:0}), counted=false;
+function newTask(){
+  let ls;
+  if(level<=1)ls=[Math.random()<.6?mkCarton(true):mkPallet(true)];
+  else if(level===2)ls=[mkPallet(false)];
+  else ls=[mkPallet(false),mkCarton(true)];
+  const vary=$('varyF').checked, o=Object.assign({},S);
+  if(vary)o.fm3=fmOf(pick([3,3.5,4,4.5,5]));
+  const cs=ls.map(l=>calcLine(l,o));
+  let f;
+  if(level===0){const l=ls[0],c=l.L*l.B*l.H;f=[['cm3','Volum per kolli','cm³',c,0],['dm3','Volum per kolli','dm³',c/1e3,3],['m3','Volum per kolli','m³',c/1e6,6],['vol','Volum hele sendingen','m³',cs[0].vol,3]]}
+  else if(level===1){const c=cs[0];f=[['vol','Volum','m³',c.vol,3],['volkg','Volumvekt','kg',c.volkg,0],['fbv','Fraktberegnende vekt','kg',c.fbv,0]]}
+  else if(level===2){const c=cs[0];f=[['vol','Volum','m³',c.vol,3],['volkg','Volumvekt','kg',c.volkg,0],['ldm','Lastemeter','ldm',c.ldm,2],['ldmkg','Lastemetervekt','kg',c.ldmkg,0],['fbv','Fraktberegnende vekt','kg',c.fbv,0]]}
+  else f=[['fbv1','Fraktberegnende, linje 1','kg',cs[0].fbv,0],['fbv2','Fraktberegnende, linje 2','kg',cs[1].fbv,0],['sum','Sum fraktberegnende vekt','kg',cs[0].fbv+cs[1].fbv,0]];
+  task={ls,o,vary,fields:f.map(([k,label,unit,ans,dec])=>({k,label,unit,ans,dec})),no:Math.floor(100000+Math.random()*899999)};
+  counted=false;renderTask();
+}
+const HINT={
+  cm3:()=>'Gang lengde × bredde × høyde, alle i cm.',
+  dm3:()=>'Del cm³ på 1000. 1 dm³ = 1000 cm³.',
+  m3:()=>'Del dm³ på 1000, eller cm³ på 1 000 000. 1 m³ = 1000 dm³.',
+  vol:()=>'Gjør cm om til meter først, gang L × B × H, og gang så med antall kolli.',
+  volkg:()=>`Faktor 1:${fx(task.o.fm3)} betyr 1 m³ = 1000 ÷ ${fx(task.o.fm3)} = ${fk(task.o.fm3)} kg. Gang volumet (m³) med det.`,
+  ldm:()=>`Lengde × bredde i meter, delt på bilbredden ${nf(S.br,1)} m, gang med antall.`,
+  ldmkg:()=>`Lastemeter × ${S.fldm}.`,
+  fbv:()=>'Velg den høyeste av faktisk vekt, volumvekt og lastemetervekt.',
+  fbv1:()=>'Linje 1 kan ikke stables: sammenlign faktisk vekt, volumvekt og lastemetervekt.',
+  fbv2:()=>'Linje 2 kan stables: sammenlign faktisk vekt og volumvekt.',
+  sum:()=>'Legg sammen fraktberegnende vekt for linje 1 og linje 2.'
+};
+function renderTask(){
+  $('wbNo').textContent='Nr. '+task.no;
+  let h='<thead><tr><th>Linje</th><th>Beskrivelse</th><th class="r">Antall</th><th>Mål L × B × H</th><th class="r">Vekt per kolli</th><th>Stablebar</th></tr></thead><tbody>';
+  task.ls.forEach((l,i)=>h+=`<tr><td class="num">${i+1}</td><td>${esc(l.navn)}</td><td class="r num">${l.n}</td><td class="num">${l.L} × ${l.B} × ${l.H} cm</td><td class="r num">${l.kg} kg</td><td>${l.stack?'Ja':'Nei'}</td></tr>`);
+  $('taskTable').innerHTML=h+'</tbody>';
+  $('taskInfo').textContent=level===0?'Husk: 1 m³ = 1000 dm³ = 1 000 000 cm³. Skriv svarene uten avrunding.':`Omregningsfaktor: 1:${fx(task.o.fm3)}${task.vary?'':` (1 m³ = ${fk(task.o.fm3)} kg)`}${level>1?`, 1 lastemeter = ${task.o.fldm} kg, bilbredde ${nf(task.o.br,1)} m`:''}. Rund kg til hele tall.`;
+  $('answers').innerHTML=task.fields.map(f=>`<div class="ans" data-k="${f.k}"><label for="a-${f.k}">${f.label}</label><div class="inrow"><input id="a-${f.k}" inputmode="decimal" autocomplete="off"><span class="unit">${f.unit}</span></div><div class="fb" aria-live="polite"></div></div>`).join('');
+  $('taskBanner').innerHTML='';$('solution').hidden=true;
+  $('score').textContent=`Riktige oppgaver: ${score.ok} av ${score.tot}`;
+}
+function ok(f,v){
+  if(isNaN(v))return false;
+  if(f.unit==='kg')return Math.abs(v-f.ans)<=Math.max(2,f.ans*0.01);
+  if(f.unit==='ldm')return Math.abs(v-f.ans)<=Math.max(0.015,f.ans*0.01);
+  return Math.abs(v-f.ans)<=Math.abs(f.ans)*0.005+(f.unit==='m³'&&f.dec===3?0.0005:0)+1e-9;
+}
+$('taskForm').addEventListener('submit',e=>{
+  e.preventDefault();let all=true;
+  task.fields.forEach(f=>{
+    const box=document.querySelector(`.ans[data-k="${f.k}"]`),v=pnum(box.querySelector('input').value),good=ok(f,v);
+    box.classList.toggle('ok',good);box.classList.toggle('bad',!good);
+    box.querySelector('.fb').textContent=good?'✓ Riktig':(isNaN(v)?'Skriv inn et tall. ':'✗ Ikke helt. ')+HINT[f.k]();
+    if(!good)all=false;
+  });
+  if(!counted){score.tot++;if(all)score.ok++;counted=true;store.set('fvl-score',score)}
+  $('taskBanner').innerHTML=all?'<div class="banner ok">Alt riktig. Trykk «Ny oppgave» for å fortsette.</div>':'<div class="banner bad">Noen svar er feil. Les hintene og prøv igjen.</div>';
+  $('score').textContent=`Riktige oppgaver: ${score.ok} av ${score.tot}`;
+});
+$('showSol').onclick=()=>{$('solSteps').innerHTML=level===0?unitsHTML(task.ls):stepsHTML(task.ls,task.o);$('solution').hidden=false;if(!counted){score.tot++;counted=true;store.set('fvl-score',score);$('score').textContent=`Riktige oppgaver: ${score.ok} av ${score.tot}`}};
+$('newTask').onclick=newTask;
+$('varyF').onchange=newTask;
+$('toExplore').onclick=()=>{if(task.o.fm3!==S.fm3){S.fm3=task.o.fm3;store.set('fvl-set',S);renderSettings();taskStale=true}lines=JSON.parse(JSON.stringify(task.ls));lines.forEach(l=>l.id=uid++);renderLines();update();show('utforsk')};
+$('levels').onclick=e=>{const b=e.target.closest('[data-level]');if(!b)return;level=+b.dataset.level;$('levels').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));newTask()};
+
+/* ---------- regler / innstillinger ---------- */
+function renderSettings(){
+  const setv=(id,v)=>{const el=$(id);if(el!==document.activeElement)el.value=v};
+  const fr=Math.round(1000/S.fm3*100)/100;
+  setv('setF',fr);setv('fxF',fr);setv('setFm3',Math.round(S.fm3*10)/10);setv('setFldm',S.fldm);setv('setBr',S.br);setv('fxM3',S.fm3);setv('fxLdm',S.fldm);
+  $('fxFo').textContent='1 : '+fx(S.fm3);$('fxM3o').textContent=fk(S.fm3)+' kg';$('fxLdmo').textContent=nf(S.fldm)+' kg';
+  document.querySelectorAll('#fxPresets [data-f]').forEach(b=>b.setAttribute('aria-pressed',Math.abs(fmOf(+b.dataset.f)-S.fm3)<0.5&&(!b.dataset.fldm||+b.dataset.fldm===S.fldm)));
+  document.querySelectorAll('.js-f').forEach(e=>e.textContent=fx(S.fm3));
+  document.querySelectorAll('.js-fm3').forEach(e=>e.textContent=fk(S.fm3));
+  document.querySelectorAll('.js-fldm').forEach(e=>e.textContent=S.fldm);
+  document.querySelectorAll('.js-br').forEach(e=>e.textContent=nf(S.br,1));
+}
+let taskStale=false;
+function applySettings(){store.set('fvl-set',S);renderSettings();update();taskStale=true;if(!$('view-oppgaver').hidden){newTask();taskStale=false}}
+[['setFm3','fm3'],['setFldm','fldm'],['setBr','br'],['fxM3','fm3'],['fxLdm','fldm']].forEach(([id,k])=>$(id).addEventListener('input',e=>{const v=pnum(e.target.value);if(v>0){S[k]=v;applySettings()}}));
+['setF','fxF'].forEach(id=>$(id).addEventListener('input',e=>{const v=pnum(e.target.value);if(v>0){S.fm3=fmOf(v);applySettings()}}));
+$('fxPresets').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;S.fm3=fmOf(+b.dataset.f);if(b.dataset.fldm)S.fldm=+b.dataset.fldm;applySettings()};
+$('resetSet').onclick=()=>{S=Object.assign({},DEF);applySettings()};
+
+/* ---------- faner ---------- */
+function show(v){
+  ['utforsk','oppgaver','regler'].forEach(x=>{$('view-'+x).hidden=x!==v;$('tab-'+x).setAttribute('aria-selected',x===v)});
+  if(v==='oppgaver'&&taskStale){newTask();taskStale=false}
+  if(location.hash!=='#'+v)history.replaceState(null,'','#'+v);
+}
+document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)show(b.dataset.view)};
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(['utforsk','oppgaver','regler'].includes(h))show(h)});
+
+renderPresets();renderLines();renderSettings();update();newTask();
+const h0=location.hash.slice(1);if(['utforsk','oppgaver','regler'].includes(h0))show(h0);
+})();
+</script>
+</body>
+</html>
