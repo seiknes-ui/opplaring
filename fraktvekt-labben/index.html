@@ -155,6 +155,69 @@ svg .over{fill:var(--bad);opacity:.12}
 .ladder .arr::after{content:" →"}
 @media (max-width:560px){.ladder{grid-template-columns:minmax(0,1fr)}.ladder .arr::after{content:" ↓"}}
 @media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.btn:disabled{opacity:.4;cursor:default;filter:none}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ta,.ans textarea{font:inherit;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);resize:vertical}
+.backbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;border-left:6px solid var(--accent)}
+
+/* Oppdrag */
+.ogrid{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px;align-items:start}
+.oside{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+@media (max-width:900px){.ogrid{grid-template-columns:minmax(0,1fr)}.oside{position:static;max-height:none}}
+.prog{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.prog .track{flex:1;height:10px}
+.prog .fill{background:var(--ok)}
+#olist{display:flex;flex-direction:column;gap:2px}
+.ogroup{margin:10px 0 2px}
+.oitem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;font:inherit;font-size:15px;padding:6px 8px;border:0;border-radius:4px;background:transparent;color:var(--ink);cursor:pointer}
+.oitem:hover{background:var(--surface-2)}
+.oitem[aria-current="true"]{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--accent)}
+.st{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;font-weight:700;border:2px solid var(--line);color:var(--muted)}
+.st.riktig,.st.levert{background:var(--ok);border-color:var(--ok);color:#fff}
+.st.hint{border-color:var(--ok);color:var(--ok)}
+.st.losning{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 35%,transparent);color:var(--ink)}
+.st.delvis{border-color:var(--c-act);color:var(--c-act);border-style:dashed}
+@media (max-width:900px){#olist{flex-direction:row;flex-wrap:wrap;gap:6px}.ogroup,.oitem .ot{display:none}.oitem{width:auto;padding:3px}.st{width:34px;height:34px;font-size:14px}}
+.otop{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:12px}
+.spill{font-family:var(--f-display);font-weight:700;font-stretch:85%;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:3px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.spill.riktig,.spill.levert{background:var(--ok);border-color:var(--ok);color:#fff}
+.spill.hint{border-color:var(--ok);color:var(--ok)}
+.spill.losning{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 35%,transparent);color:var(--ink)}
+.spill.delvis{border-color:var(--c-act);color:var(--c-act)}
+.ans.wide{grid-column:1/-1}
+fieldset.ans{margin:0;min-width:0}
+.ans legend{float:left;width:100%;padding:0;margin-bottom:6px;font-size:14px;font-weight:600}
+.ans legend+*{clear:both}
+.opt{display:flex;gap:8px;align-items:flex-start;font-size:15px;padding:3px 0;cursor:pointer}
+.ans .opt input{flex:none;width:18px;height:18px;margin:3px 0 0;padding:0;accent-color:var(--c-act)}
+.hintbox{border-left:4px solid var(--accent);background:var(--surface-2);padding:10px 14px;border-radius:4px}
+.onav{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--surface-2);font-size:14px}
+.tile b{display:block;font-family:var(--f-mono);font-size:28px;line-height:1.1}
+.tile.ok b{color:var(--ok)}
+.rp{display:flex;flex-direction:column;gap:14px}
+.rp-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:3px solid var(--ink);padding-bottom:10px}
+.rp-code{text-align:right}.rp-code b{display:block;font-size:20px}
+.rp-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:0}
+.rp-meta dt{font-family:var(--f-display);font-stretch:85%;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rp-meta dd{margin:0;font-weight:600}
+.rp-ans{margin:0;padding:0;list-style:none;font-size:13px}
+.okc{color:var(--ok);font-weight:700}.badc{color:var(--bad);font-weight:700}
+.rp-q{font-weight:600;margin:6px 0 0}
+.rp-a{margin:4px 0 8px;padding:8px 12px;border-left:4px solid var(--line);background:var(--surface-2);white-space:pre-wrap}
+#printArea{display:none}
+@page{margin:14mm}
+@media print{
+  body.pr{background:#fff!important}
+  body.pr .wrap{display:none!important}
+  body.pr #printArea{display:block!important;color:#000;font-size:11pt;
+    --ink:#000;--muted:#444;--line:#aaa;--surface-2:#f2f2f2;--ok:#1d6b3d;--bad:#a8301c}
+  #printArea tr,#printArea .rp-a{break-inside:avoid}
+  #printArea .tablewrap{overflow:visible}
+}
 </style>
 
 </head>
@@ -171,12 +234,17 @@ svg .over{fill:var(--bad);opacity:.12}
     <nav class="tabs" role="tablist">
       <button role="tab" id="tab-utforsk" aria-selected="true" data-view="utforsk">Utforsk</button>
       <button role="tab" id="tab-oppgaver" aria-selected="false" data-view="oppgaver">Oppgaver</button>
+      <button role="tab" id="tab-oppdrag" aria-selected="false" data-view="oppdrag">Oppdrag</button>
       <button role="tab" id="tab-regler" aria-selected="false" data-view="regler">Regler</button>
     </nav>
   </header>
 
   <!-- UTFORSK -->
   <section id="view-utforsk">
+    <div class="panel backbar" id="backBar" hidden>
+      <span>Du utforsker en sending fra <b>Oppdrag</b>. Endringer her påvirker ikke svarene dine.</span>
+      <button class="btn primary" id="backBtn">← Tilbake til oppdraget</button>
+    </div>
     <div class="grid">
       <div class="stack">
         <div class="panel stack">
@@ -288,6 +356,23 @@ svg .over{fill:var(--bad);opacity:.12}
     </div>
   </section>
 
+  <!-- OPPDRAG -->
+  <section id="view-oppdrag" hidden>
+    <div class="ogrid">
+      <aside class="panel stack oside">
+        <div>
+          <div class="label">Oppdrag</div>
+          <h3>Omregningsfaktor på bil</h3>
+          <p class="muted" style="margin:4px 0 0;font-size:14px">14 oppgaver i fire deler. Svarene lagres i nettleseren, så du kan ta pauser. Lever inn til slutt.</p>
+        </div>
+        <div class="prog"><div class="track"><div class="fill" id="oprog"></div></div><span id="oprogTxt"></span></div>
+        <nav id="olist" aria-label="Oppgaver i oppdraget"></nav>
+        <button class="btn primary" id="toReport">Lever inn →</button>
+      </aside>
+      <div class="stack" id="omain"></div>
+    </div>
+  </section>
+
   <!-- REGLER -->
   <section id="view-regler" hidden>
     <div class="stack">
@@ -355,9 +440,17 @@ svg .over{fill:var(--bad);opacity:.12}
         </div>
         <div class="btnrow" style="margin-top:12px"><button class="btn" id="resetSet">Tilbakestill til 333 / 1850 / 2,4</button></div>
       </div>
+      <div class="panel prose stack">
+        <h3>Kontroller en innlevert rapport</h3>
+        <p class="muted" style="margin:0">Elevene leverer rapporten fra fanen Oppdrag i læringsplattformen, som PDF eller tekst. Svar og fremdrift lagres bare i elevens nettleser. Lim inn teksten fra en rapport her, enten fra «Kopier som tekst» eller fra tekstfilen. Kontrollkoden viser om teksten er endret etter at den ble laget.</p>
+        <textarea class="ta" id="verTxt" rows="6" aria-label="Rapporttekst"></textarea>
+        <div class="btnrow"><button class="btn" id="verBtn">Kontroller</button></div>
+        <div id="verRes" aria-live="polite"></div>
+      </div>
     </div>
   </section>
 </div>
+<div id="printArea"></div>
 
 <script>
 (function(){
@@ -639,17 +732,340 @@ function applySettings(){store.set('fvl-set',S);renderSettings();update();taskSt
 $('fxPresets').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;S.fm3=fmOf(+b.dataset.f);if(b.dataset.fldm)S.fldm=+b.dataset.fldm;applySettings()};
 $('resetSet').onclick=()=>{S=Object.assign({},DEF);applySettings()};
 
+/* ---------- oppdrag ---------- */
+const O=f=>({fm3:fmOf(f),fldm:1850,br:2.4}), O3=O(3);
+const cl=(l,o=O3)=>calcLine(l,o);
+const LN=(navn,n,L,B,H,kg,stack,type='egen')=>({navn,type,n,L,B,H,kg,stack});
+const nu=(k,label,unit,ans)=>({k,label,unit,ans});
+const ch=(k,label,options,ans)=>({k,type:'choice',label,options,ans});
+const tx=(k,label,min)=>({k,type:'text',label,min});
+const mono=s=>`<p class="mono" style="margin:0;font-size:14px;line-height:1.7">${s}</p>`;
+const INFO3='Faktor 1:3 (1 m³ = 333 kg) · 1 lastemeter = 1850 kg · bilbredde 2,4 m.';
+const DELER={A:'Volumenheter',B:'Omregningsfaktor',C:'Lastemeter',D:'Hele sendingen'};
+
+const lA3=LN('Esker med hodeputer',18,60,40,45,5,true);
+const lB2=LN('Esker med dyner',20,60,40,50,7,true);
+const lB4=LN('Eske med dyner',1,60,40,40,6,true);
+const lC1=LN('Pall med glassvarer',6,120,80,120,300,false,'eur');
+const lC2=LN('Pall med isolasjonsplater',34,120,80,200,90,false,'eur');
+const lC3=LN('Pall med malingsspann',1,120,80,100,250,false,'eur');
+const lC4=LN('Pall med emballerte lamper',4,120,80,100,110,false,'eur');
+const lC4s=Object.assign({},lC4,{stack:true});
+const lD1=[LN('Pall med kontorstoler',3,120,80,180,120,false,'eur'),LN('Esker med bøker',12,40,30,30,15,true)];
+const lD2=LN('Esker med hodeputer',10,80,60,60,8,true);
+
+const T=[
+ {id:'a1',del:'A',tittel:'Fra cm³ til m³',
+  tekst:'<p>En EUR-pall med gods måler 120 × 80 × 150 cm (lengde × bredde × høyde). Regn ut volumet i cm³, dm³ og m³.</p>',
+  fields:[nu('cm3','Volum i cm³','cm³',1440000),nu('dm3','Volum i dm³','dm³',1440),nu('m3','Volum i m³','m³',1.44)],
+  hint:'Gang lengde × bredde × høyde i cm, så får du cm³. Del på 1000 for å få dm³, og på 1000 én gang til for å få m³.',
+  los:()=>mono('120 × 80 × 150 = 1 440 000 cm³')+ladder(1440000)+'<p class="muted">Snarvei: 1,2 × 0,8 × 1,5 m = 1,44 m³ med en gang.</p>'},
+ {id:'a2',del:'A',tittel:'Liter og kubikkmeter',
+  tekst:'<p>1 dm³ er det samme som 1 liter. Regn om mellom enhetene.</p>',
+  fields:[nu('a','0,75 m³ er hvor mange dm³?','dm³',750),nu('b','2500 dm³ er hvor mange m³?','m³',2.5),nu('c','En eske er 50 × 40 × 30 cm. Hvor mange liter rommer den?','liter',60)],
+  hint:'Fra m³ til dm³ ganger du med 1000. Fra dm³ til m³ deler du på 1000. For esken regner du ut cm³ først og deler på 1000 for å få liter.',
+  los:()=>mono('0,75 × 1000 = 750 dm³<br>2500 ÷ 1000 = 2,5 m³<br>50 × 40 × 30 = 60 000 cm³ = 60 dm³ = 60 liter')},
+ {id:'a3',del:'A',tittel:'Volum for hele sendingen',ls:[lA3],
+  tekst:'<p>Se fraktbrevet. Regn ut volumet for én eske og for hele sendingen.</p>',
+  fields:[nu('en','Volum per eske','m³',cl(lA3).vol/lA3.n),nu('alle','Volum for hele sendingen','m³',cl(lA3).vol),nu('l','Hele sendingen i liter','liter',cl(lA3).vol*1000)],
+  hint:'Gjør cm om til meter først (60 cm = 0,6 m). Gang L × B × H og så med antall esker.',
+  los:()=>unitsHTML([lA3])+mono('0,6 × 0,4 × 0,45 = 0,108 m³ per eske<br>0,108 × 18 = 1,944 m³ = 1944 liter')},
+
+ {id:'b1',del:'B',tittel:'Faktor som enkelt tall',
+  tekst:'<p>Omregningsfaktoren oppgis ofte som et enkelt tall, for eksempel 1:4. Regn ut hvor mange kg 1 m³ regnes som.</p>',
+  fields:[nu('f4','Faktor 1:4','kg/m³',250),nu('f5','Faktor 1:5','kg/m³',200),nu('f25','Faktor 1:2,5','kg/m³',400),ch('hoy','Hvilken faktor gir høyest volumvekt for det samme godset?',['1:2,5','1:4','1:5'],0)],
+  hint:'Del 1000 på tallet etter kolon. Eksempel: 1000 ÷ 3 = 333 kg per m³.',
+  los:()=>mono('1000 ÷ 4 = 250 kg per m³<br>1000 ÷ 5 = 200 kg per m³<br>1000 ÷ 2,5 = 400 kg per m³')+'<p>Jo lavere tallet etter kolon er, jo flere kg teller hver m³. Derfor gir 1:2,5 høyest volumvekt.</p>'},
+ {id:'b2',del:'B',tittel:'Samme gods, ulik faktor',ls:[lB2],
+  tekst:'<p>Kunden sender dyner. Regn ut volumvekten med tre ulike omregningsfaktorer. Eskene kan stables, så du trenger ikke regne lastemeter.</p>',
+  fields:[nu('vol','Volum for hele sendingen','m³',cl(lB2).vol),nu('f3','Volumvekt med faktor 1:3','kg',cl(lB2,O(3)).volkg),nu('f4','Volumvekt med faktor 1:4','kg',cl(lB2,O(4)).volkg),nu('f5','Volumvekt med faktor 1:5','kg',cl(lB2,O(5)).volkg),ch('best','Med faktor 1:5: hvilken vekt bestemmer?',['Faktisk vekt','Volumvekt'],1)],
+  hint:'Regn ut volumet i m³ først. Gang det med 333 (1:3), 250 (1:4) og 200 (1:5). Sammenlign med den faktiske vekten: 7 kg × 20.',
+  los:()=>`<p>Volum: 0,6 × 0,4 × 0,5 m × 20 = ${nf(cl(lB2).vol,1)} m³. Faktisk vekt: 7 × 20 = 140 kg.</p><div class="tablewrap"><table class="calc"><thead><tr><th>Faktor</th><th>Utregning</th><th class="r">Volumvekt</th></tr></thead><tbody>${[3,4,5].map(f=>{const o=O(f);return `<tr><td class="num">1:${f}</td><td class="f">${nf(cl(lB2).vol,1)} m³ × ${fk(o.fm3)} kg</td><td class="r num">${kg(cl(lB2,o).volkg)}</td></tr>`}).join('')}</tbody></table></div><p>Volumvekten er høyere enn den faktiske vekten med alle tre faktorene, så kunden betaler for plassen. En høyere faktor gir lavere volumvekt.</p>`},
+ {id:'b3',del:'B',tittel:'Hva lønner seg for kunden?',
+  tekst:'<p>Tenk over hva omregningsfaktoren betyr. Du kan prøve i Utforsk med eksempelsendingene og knappene for 1:3 og 1:5.</p>',
+  fields:[ch('q1','Kunden sender dyner og puter, altså lett gods som tar mye plass. Hvilken avtale er best for kunden?',['Faktor 1:3','Faktor 1:5','Det spiller ingen rolle'],1),
+          ch('q2','En annen kunde sender stålprofiler: 950 kg per pall, og pallene tar lite plass. Hvordan påvirker faktoren prisen?',['Faktor 1:5 gir mye lavere pris','Faktor 1:3 gir mye lavere pris','Lite eller ingenting, fordi den faktiske vekten bestemmer uansett'],2),
+          ch('q3','Hva betyr faktor 1:3?',['3 kg regnes som 1 dm³','3 dm³ (3 liter) regnes som 1 kg','1 m³ regnes som 3 kg'],1)],
+  hint:'Faktoren endrer bare volumvekten. Den faktiske vekten endrer seg aldri.',
+  los:()=>'<p><b>1.</b> Faktor 1:5 gir 200 kg per m³, mens 1:3 gir 333 kg per m³. For lett gods er det volumvekten som bestemmer, så 1:5 gir lavest pris.</p><p><b>2.</b> Stålprofilene veier mye mer enn volumvekten, uansett faktor. Den faktiske vekten bestemmer, så faktoren betyr lite.</p><p><b>3.</b> 1:3 betyr at 3 dm³ regnes som 1 kg. 1 m³ er 1000 dm³, og 1000 ÷ 3 = 333 kg.</p>'},
+ {id:'b4',del:'B',tittel:'Utforsk: grensevekten',ls:[lB4],
+  tekst:'<p>Én eske med dyner veier 6 kg. Hvor mye må esken veie før det er den faktiske vekten som bestemmer? Trykk «Prøv i Utforsk» og dra i glidebryteren for vekt. Følg med på når søylene bytter plass.</p>',
+  fields:[nu('vol','Volum for esken','m³',cl(lB4).vol),nu('g3','Grensevekt med faktor 1:3','kg',cl(lB4).volkg),nu('g5','Grensevekt med faktor 1:5','kg',cl(lB4,O(5)).volkg)],
+  hint:'Grensen ligger der faktisk vekt og volumvekt er like store. Grensevekt = volum (m³) × kg per m³.',
+  los:()=>mono('0,6 × 0,4 × 0,4 = 0,096 m³<br>1:3 → 0,096 × 333 = 31,97 ≈ 32 kg<br>1:5 → 0,096 × 200 = 19,2 kg')+'<p>Veier esken mer enn dette, er det den faktiske vekten som bestemmer. Med en høyere faktor blir grensen lavere.</p>'},
+
+ {id:'c1',del:'C',tittel:'Lastemeter for paller',ls:[lC1],info:INFO3,
+  tekst:'<p>Glassvarene kan ikke stables. Pallene tar derfor gulvplass som ingen andre kan bruke.</p>',
+  fields:[nu('en','Lastemeter for én EUR-pall','ldm',0.4),nu('alle','Lastemeter for hele sendingen','ldm',cl(lC1).ldm),nu('kg','Lastemetervekt','kg',cl(lC1).ldmkg),nu('ind','Lastemeter for én industripall (120 × 100 cm)','ldm',0.5)],
+  hint:'Lastemeter = lengde × bredde (i meter) ÷ bilbredden på 2,4 m. Lastemetervekt = lastemeter × 1850.',
+  los:()=>mono('1,2 × 0,8 ÷ 2,4 = 0,4 ldm per pall<br>0,4 × 6 = 2,4 ldm<br>2,4 × 1850 = 4440 kg<br>Industripall: 1,2 × 1,0 ÷ 2,4 = 0,5 ldm')+stepsHTML([lC1],O3)},
+ {id:'c2',del:'C',tittel:'Full trailer',ls:[lC2],info:INFO3,
+  tekst:'<p>En standard semitrailer er 13,6 m lang. Kunden har 34 paller med isolasjon som ikke kan stables. Prøv sendingen i Utforsk og se på trailergulvet.</p>',
+  fields:[nu('ant','Hvor mange EUR-paller får plass etter lastemeterformelen?','stk',34),nu('ldmkg','Lastemetervekt for en full trailer (13,6 ldm)','kg',13.6*1850),nu('vol','Volumvekt for de 34 pallene','kg',cl(lC2).volkg),ch('bet','Hva betaler kunden for?',['Faktisk vekt','Volumvekt','Lastemetervekt'],2)],
+  hint:'1 EUR-pall er 0,4 ldm. Hvor mange ganger går 0,4 opp i 13,6?',
+  los:()=>mono('13,6 ÷ 0,4 = 34 paller<br>13,6 ldm × 1850 = 25 160 kg')+stepsHTML([lC2],O3)+'<p>Pallene veier lite, men de fyller hele gulvet. Derfor bestemmer lastemetervekten. I praksis får det plass 33–34 EUR-paller på en trailer, avhengig av hvordan de står.</p>'},
+ {id:'c3',del:'C',tittel:'Utforsk: når teller den faktiske vekten?',ls:[lC3],info:INFO3,
+  tekst:'<p>Én pall med malingsspann kan ikke stables. Finn ut hvor tung pallen må være før den faktiske vekten bestemmer. Prøv i Utforsk: dra vekten oppover og se hvilken søyle som er høyest.</p>',
+  fields:[nu('vol','Volumvekt for pallen','kg',cl(lC3).volkg),nu('ldm','Lastemetervekt for pallen','kg',cl(lC3).ldmkg),nu('gr','Pallen må veie mer enn','kg',cl(lC3).ldmkg),ch('hvorfor','Hvorfor er grensen ikke volumvekten?',['Fordi lastemetervekten er høyere enn volumvekten, og den faktiske vekten må slå begge','Fordi faktoren er 1:3','Fordi pallen er lav'],0)],
+  hint:'Regn ut både volumvekten og lastemetervekten. Den faktiske vekten må være høyere enn begge for å bestemme.',
+  los:()=>stepsHTML([lC3],O3)+`<p>Lastemetervekten (${kg(cl(lC3).ldmkg)}) er høyere enn volumvekten (${kg(cl(lC3).volkg)}). Pallen må derfor veie over ${kg(cl(lC3).ldmkg)} før den faktiske vekten bestemmer.</p>`},
+ {id:'c4',del:'C',tittel:'Stable eller ikke?',ls:[lC4],info:INFO3,
+  tekst:'<p>Fire paller med lamper kan ikke stables. Kunden vil vite hvor mye billigere det blir hvis lampene pakkes slik at pallene kan stables to i høyden.</p>',
+  fields:[nu('ns','Fraktberegnende vekt når pallene ikke kan stables','kg',cl(lC4).fbv),nu('s','Fraktberegnende vekt når pallene kan stables','kg',cl(lC4s).fbv),nu('spar','Hvor mange kg sparer kunden?','kg',cl(lC4).fbv-cl(lC4s).fbv),ch('hvorfor','Hvorfor blir det billigere?',['Pallene blir lettere','Pallene tar ikke lenger egen gulvplass, så lastemeter brukes ikke','Omregningsfaktoren endres'],1)],
+  hint:'Stablebart gods regnes ikke i lastemeter. Sammenlign tre vekter når pallene ikke kan stables, og to vekter når de kan.',
+  los:()=>'<div class="label">Kan ikke stables</div>'+stepsHTML([lC4],O3)+'<div class="label">Kan stables</div>'+stepsHTML([lC4s],O3)+mono(`${nf(Math.round(cl(lC4).fbv))} − ${nf(Math.round(cl(lC4s).fbv))} = ${nf(Math.round(cl(lC4).fbv)-Math.round(cl(lC4s).fbv))} kg spart`)},
+
+ {id:'d1',del:'D',tittel:'Fraktbrev med to linjer',ls:lD1,info:INFO3,
+  tekst:'<p>Sendingen har to varelinjer. Regn ut fraktberegnende vekt for hver linje og legg dem sammen.</p>',
+  fields:[nu('l1','Fraktberegnende vekt, linje 1','kg',cl(lD1[0]).fbv),nu('l2','Fraktberegnende vekt, linje 2','kg',cl(lD1[1]).fbv),nu('sum','Sum for sendingen','kg',cl(lD1[0]).fbv+cl(lD1[1]).fbv),ch('h1','Hvilken vekt bestemmer på linje 1?',['Faktisk vekt','Volumvekt','Lastemetervekt'],2)],
+  hint:'Linje 1 kan ikke stables, så du sammenligner tre vekter. Linje 2 kan stables, så du sammenligner bare faktisk vekt og volumvekt.',
+  los:()=>stepsHTML(lD1,O3)},
+ {id:'d2',del:'D',tittel:'Velg transportør',ls:[lD2],info:'Eskene kan stables. Rund av den fraktberegnende vekten til hele kg før du regner pris.',
+  tekst:'<p>To transportører gir tilbud på sendingen:</p><div class="tablewrap"><table class="calc"><thead><tr><th>Transportør</th><th>Faktor</th><th class="r">Pris per kg</th></tr></thead><tbody><tr><td>A</td><td class="num">1:3</td><td class="r num">4,00 kr</td></tr><tr><td>B</td><td class="num">1:5</td><td class="r num">5,50 kr</td></tr></tbody></table></div><p>Prisen regnes av den fraktberegnende vekten. Hvem er billigst?</p>',
+  fields:[nu('fa','Fraktberegnende vekt hos A','kg',cl(lD2,O(3)).fbv),nu('fb','Fraktberegnende vekt hos B','kg',cl(lD2,O(5)).fbv),nu('pa','Pris hos A','kr',Math.round(cl(lD2,O(3)).fbv)*4),nu('pb','Pris hos B','kr',Math.round(cl(lD2,O(5)).fbv)*5.5),ch('best','Hvilken transportør er billigst?',['Transportør A','Transportør B'],1)],
+  hint:'Regn ut volumvekten med begge faktorene og sammenlign med den faktiske vekten (8 kg × 10). Gang så den fraktberegnende vekten med prisen per kg.',
+  los:()=>{const a=cl(lD2,O(3)),b=cl(lD2,O(5)),ra=Math.round(a.fbv),rb=Math.round(b.fbv);return mono(`Volum: 0,8 × 0,6 × 0,6 × 10 = ${nf(a.vol,2)} m³<br>Faktisk vekt: 8 × 10 = 80 kg`)+`<div class="tablewrap"><table class="calc"><thead><tr><th>Transportør</th><th>Volumvekt</th><th class="r">Fraktberegnende</th><th class="r">Pris</th></tr></thead><tbody><tr><td>A (1:3)</td><td class="f">${nf(a.vol,2)} × 333</td><td class="r num">${kg(ra)}</td><td class="r num">${nf(ra)} × 4,00 = ${nf(ra*4)} kr</td></tr><tr><td>B (1:5)</td><td class="f">${nf(b.vol,2)} × 200</td><td class="r num">${kg(rb)}</td><td class="r num">${nf(rb)} × 5,50 = ${nf(rb*5.5)} kr</td></tr></tbody></table></div><p>B har høyere pris per kg, men den høye faktoren gir mye lavere volumvekt. For lett gods blir B billigst.</p>`}},
+ {id:'d3',del:'D',tittel:'Refleksjon',text:true,
+  tekst:'<p>Svar med hele setninger. Svarene blir med i rapporten, og læreren vurderer dem.</p>',
+  fields:[tx('r1','Forklar med egne ord hvorfor transportøren bruker volumvekt og lastemeter, og ikke bare den faktiske vekten. Bruk gjerne et eksempel fra oppdraget.',60),tx('r2','Hva var vanskeligst i oppdraget, og hva gjorde du for å forstå det?',20)]}
+];
+
+let OS=Object.assign({start:null,navn:'',klasse:'',cur:0,t:{}},store.get('fvl-oppdrag',{}));
+if(!(OS.cur==='rapport'||(OS.cur>=0&&OS.cur<T.length)))OS.cur=0;
+let fromOppdrag=false;
+const osave=()=>store.set('fvl-oppdrag',OS);
+const tst=id=>OS.t[id]||(OS.t[id]={ans:{},res:null,att:0,hint:false,sol:false,done:false});
+const isEmpty=v=>v==null||String(v).trim()==='';
+const SL={riktig:'Riktig',hint:'Riktig med hint',losning:'Løst etter løsningsforslag',delvis:'Påbegynt',ikke:'Ikke startet',levert:'Besvart'};
+function status(t){
+  const s=OS.t[t.id];if(!s)return 'ikke';
+  if(s.done)return t.text?'levert':s.sol?'losning':s.hint?'hint':'riktig';
+  return (s.att>0||Object.values(s.ans).some(v=>!isEmpty(v)))?'delvis':'ikke';
+}
+function okNum(f,v){
+  if(isNaN(v))return false;const a=f.ans,u=f.unit;
+  if(u==='stk')return Math.abs(v-a)<0.01;
+  if(/kg|kr/.test(u))return Math.abs(v-a)<=Math.max(2,a*0.01);
+  if(u==='ldm')return Math.abs(v-a)<=Math.max(0.015,a*0.01);
+  return Math.abs(v-a)<=Math.abs(a)*0.005+(u==='m³'?0.0005:0)+1e-9;
+}
+function fieldOk(f,v){
+  if(f.type==='text')return String(v||'').trim().length>=f.min;
+  if(f.type==='choice')return !isEmpty(v)&&+v===f.ans;
+  return okNum(f,pnum(v));
+}
+function numFb(f,v){
+  if(isNaN(v))return 'Skriv inn et tall.';
+  const r=v/f.ans;
+  const M=[[1000,'Svaret er 1000 ganger for stort. Sjekk enhetene.'],[1e-3,'Svaret er 1000 ganger for lite. Sjekk enhetene.'],[1e6,'Svaret er en million ganger for stort. Har du glemt å gjøre cm om til meter?'],[1e-6,'Svaret er en million ganger for lite. Sjekk enhetene.'],[1e4,'Svaret er 10 000 ganger for stort. Regn lengde og bredde i meter.'],[100,'Svaret er 100 ganger for stort. Sjekk om du har brukt cm i stedet for meter.']];
+  for(const [x,msg] of M)if(Math.abs(r/x-1)<0.02)return msg;
+  return 'Ikke riktig ennå.';
+}
+function waybillHTML(ls,no){
+  let h=`<div class="waybill"><div class="wb-top"><span>Fraktbrev</span><span>${no}</span></div><div class="tablewrap"><table class="calc"><thead><tr><th>Linje</th><th>Beskrivelse</th><th class="r">Antall</th><th>Mål L × B × H</th><th class="r">Vekt per kolli</th><th>Stablebar</th></tr></thead><tbody>`;
+  ls.forEach((l,i)=>h+=`<tr><td class="num">${i+1}</td><td>${esc(l.navn)}</td><td class="r num">${l.n}</td><td class="num">${l.L} × ${l.B} × ${l.H} cm</td><td class="r num">${l.kg} kg</td><td>${l.stack?'Ja':'Nei'}</td></tr>`);
+  return h+'</tbody></table></div></div>';
+}
+function fieldHTML(f,s){
+  const v=s.ans[f.k]??'';
+  if(f.type==='choice')return `<fieldset class="ans wide" data-k="${f.k}"><legend>${esc(f.label)}</legend><div>${f.options.map((o,i)=>`<label class="opt"><input type="radio" name="o-${f.k}" value="${i}" ${String(v)===String(i)?'checked':''}> <span>${esc(o)}</span></label>`).join('')}</div><div class="fb" aria-live="polite"></div></fieldset>`;
+  if(f.type==='text')return `<div class="ans wide" data-k="${f.k}"><label for="o-${f.k}">${esc(f.label)}</label><textarea id="o-${f.k}" rows="5">${esc(v)}</textarea><div class="fb" aria-live="polite"></div></div>`;
+  return `<div class="ans" data-k="${f.k}"><label for="o-${f.k}">${esc(f.label)}</label><div class="inrow"><input id="o-${f.k}" inputmode="decimal" autocomplete="off" value="${esc(v)}"><span class="unit">${f.unit}</span></div><div class="fb" aria-live="polite"></div></div>`;
+}
+function renderOList(){
+  let h='',last='';
+  T.forEach((t,i)=>{
+    if(t.del!==last){h+=`<div class="label ogroup">Del ${t.del} · ${DELER[t.del]}</div>`;last=t.del}
+    const s=status(t);
+    h+=`<button class="oitem" data-i="${i}" aria-current="${OS.cur===i}" title="${i+1}. ${esc(t.tittel)}: ${SL[s]}"><span class="st ${s}" aria-hidden="true">${i+1}</span><span class="ot">${esc(t.tittel)}</span><span class="sr">${i+1}. ${esc(t.tittel)}, ${SL[s]}</span></button>`;
+  });
+  $('olist').innerHTML=h;
+  const done=T.filter(t=>OS.t[t.id]&&OS.t[t.id].done).length;
+  $('oprog').style.width=done/T.length*100+'%';
+  $('oprogTxt').textContent=`${done} av ${T.length} fullført`;
+}
+function goO(i){
+  OS.cur=(i==='rapport'||i>=T.length)?'rapport':Math.max(0,i);osave();renderOppdrag();
+  const r=$('omain').getBoundingClientRect();if(r.top<0)window.scrollTo(0,window.scrollY+r.top-12);
+}
+$('olist').onclick=e=>{const b=e.target.closest('[data-i]');if(b)goO(+b.dataset.i)};
+$('toReport').onclick=()=>goO('rapport');
+function renderOppdrag(){renderOList();if(OS.cur==='rapport')renderReport();else renderOTask()}
+
+function applyFb(t,s){
+  if(!s.res){$('oBanner').innerHTML='';return}
+  let n=0;
+  t.fields.forEach(f=>{
+    const box=$('omain').querySelector(`.ans[data-k="${f.k}"]`),good=!!s.res[f.k];if(good)n++;
+    box.classList.toggle('ok',good);box.classList.toggle('bad',!good);
+    box.querySelector('.fb').textContent=good?(t.text?'✓ Lagret':'✓ Riktig'):t.text?`Skriv litt mer (minst ${f.min} tegn).`:f.type==='choice'?'✗ Ikke riktig. Prøv igjen.':'✗ '+numFb(f,pnum(s.ans[f.k]));
+  });
+  const last=OS.cur===T.length-1, nextBtn=`<button class="btn" type="button" data-next>${last?'Gå til innlevering →':'Neste oppgave →'}</button>`;
+  $('oBanner').innerHTML=n===t.fields.length
+    ?`<div class="banner ok" tabindex="-1"><span>${t.text?'Svarene er lagret.':'Alt riktig!'}</span>${nextBtn}</div>`
+    :`<div class="banner bad" tabindex="-1"><span>${t.text?'Svarene er for korte.':`${n} av ${t.fields.length} riktig. Les tilbakemeldingen og prøv igjen.`}</span></div>`;
+}
+function renderOTask(){
+  const i=OS.cur,t=T[i],s=tst(t.id),stt=status(t);
+  $('omain').innerHTML=`<div class="panel stack">
+    <div class="otop"><div><div class="label">Del ${t.del} · ${DELER[t.del]} · Oppgave ${i+1} av ${T.length}</div><h2 style="margin-top:4px">${i+1}. ${esc(t.tittel)}</h2></div><span class="spill ${stt}">${SL[stt]}</span></div>
+    <div class="prose">${t.tekst}</div>
+    ${t.ls?waybillHTML(t.ls,'Nr. '+(4101+i)):''}
+    ${t.info?`<p class="muted" style="margin:0">${t.info}</p>`:''}
+    <form id="oForm" class="stack" novalidate>
+      <div class="answers">${t.fields.map(f=>fieldHTML(f,s)).join('')}</div>
+      <div id="oBanner"></div>
+      <div class="btnrow">
+        <button class="btn primary" type="submit">${t.text?'Lagre svar':'Sjekk svar'}</button>
+        ${t.hint?'<button class="btn" type="button" id="oHint">Vis hint</button>':''}
+        ${t.los?'<button class="btn" type="button" id="oSol">Vis løsning</button>':''}
+        ${t.ls?'<button class="btn" type="button" id="oExp">Prøv i Utforsk</button>':''}
+      </div>
+    </form>
+    <div id="oHintBox" class="hintbox" ${s.hintSeen?'':'hidden'}><b>Hint:</b> ${esc(t.hint||'')}</div>
+    <div id="oSolBox" class="stack" ${s.solSeen?'':'hidden'}><h3>Løsning</h3><div class="tablewrap stack">${s.solSeen&&t.los?t.los():''}</div></div>
+    <div class="onav"><button class="btn" type="button" id="oPrev" ${i===0?'disabled':''}>← Forrige</button><button class="btn" type="button" id="oNext">${i===T.length-1?'Til innlevering →':'Neste →'}</button></div>
+  </div>`;
+  applyFb(t,s);
+  const form=$('oForm');
+  const onIn=e=>{const box=e.target.closest('.ans');if(!box)return;s.ans[box.dataset.k]=e.target.value;if(!OS.start)OS.start=Date.now();osave();renderOList()};
+  form.addEventListener('input',onIn);form.addEventListener('change',onIn);
+  form.addEventListener('submit',e=>{
+    e.preventDefault();s.att++;if(!OS.start)OS.start=Date.now();
+    s.res={};t.fields.forEach(f=>s.res[f.k]=fieldOk(f,s.ans[f.k]));
+    const all=Object.values(s.res).every(Boolean);
+    if(all&&!s.done)s.doneAt=Date.now();
+    s.done=all;osave();renderOppdrag();
+    const b=$('oBanner').firstElementChild;if(b)b.focus();
+  });
+  $('oBanner').onclick=e=>{if(e.target.closest('[data-next]'))goO(i+1)};
+  if($('oHint'))$('oHint').onclick=()=>{s.hintSeen=true;if(!s.done)s.hint=true;osave();$('oHintBox').hidden=false};
+  if($('oSol'))$('oSol').onclick=()=>{
+    if(!s.done&&!s.sol&&!confirm('Løsningsforslaget blir registrert i rapporten din. Vil du se det?'))return;
+    s.solSeen=true;if(!s.done)s.sol=true;osave();
+    $('oSolBox').querySelector('.tablewrap').innerHTML=t.los();$('oSolBox').hidden=false;
+  };
+  if($('oExp'))$('oExp').onclick=()=>loadExplore(t.ls,O3);
+  $('oPrev').onclick=()=>goO(i-1);
+  $('oNext').onclick=()=>goO(i+1);
+}
+function loadExplore(ls,o){
+  S.fm3=o.fm3;S.fldm=o.fldm;S.br=o.br;store.set('fvl-set',S);renderSettings();taskStale=true;
+  lines=JSON.parse(JSON.stringify(ls));lines.forEach(l=>l.id=uid++);renderLines();update();
+  fromOppdrag=true;show('utforsk');window.scrollTo(0,0);
+}
+$('backBtn').onclick=()=>show('oppdrag');
+
+/* ---------- rapport ---------- */
+const fmtT=ts=>ts?new Date(ts).toLocaleString('nb-NO',{dateStyle:'short',timeStyle:'short'}):'–';
+function dispVal(f,v){
+  if(isEmpty(v))return '–';
+  if(f.type==='choice')return f.options[+v]??'–';
+  if(f.type==='text')return String(v).trim();
+  return String(v).trim()+' '+f.unit;
+}
+function statusLine(r){
+  let x=SL[r.stt];if(r.t.text)return x;
+  const s=r.s,extra=[`${s.att||0} forsøk`];
+  if(s.hint&&r.stt!=='hint')extra.push('hint brukt');
+  if(s.sol&&r.stt!=='losning')extra.push('løsning vist');
+  return `${x} (${extra.join(', ')})`;
+}
+function repData(){
+  const rows=T.map((t,i)=>{const s=OS.t[t.id]||{ans:{},att:0};return {i,t,s,stt:status(t),answers:t.fields.map(f=>{const v=s.ans[f.k];return {f,val:dispVal(f,v),ok:isEmpty(v)?null:fieldOk(f,v)}})}});
+  const graded=rows.filter(r=>!r.t.text),cnt=k=>graded.filter(r=>r.stt===k).length;
+  const sum={riktig:cnt('riktig'),hint:cnt('hint'),losning:cnt('losning')};
+  sum.ikke=graded.length-sum.riktig-sum.hint-sum.losning;
+  return {rows,graded,sum};
+}
+function repText(d,time){
+  const L=['FRAKTVEKT-LABBEN – OPPDRAG: OMREGNINGSFAKTOR PÅ BIL','Navn: '+(OS.navn.trim()||'–'),'Klasse: '+(OS.klasse.trim()||'–'),'Startet: '+fmtT(OS.start),'Levert: '+fmtT(time),'',
+    'SAMMENDRAG',`Riktig uten hjelp: ${d.sum.riktig} av ${d.graded.length}`,`Riktig med hint: ${d.sum.hint}`,`Løst etter løsningsforslag: ${d.sum.losning}`,`Ikke fullført: ${d.sum.ikke}`,'','OPPGAVER'];
+  d.rows.forEach(r=>{
+    L.push(`${r.i+1}. ${r.t.tittel} – ${statusLine(r)}`);
+    r.answers.forEach(a=>{if(r.t.text)L.push('   Spørsmål: '+a.f.label,'   Svar: '+a.val);else L.push(`   ${a.f.label}: ${a.val}${a.ok==null?'':a.ok?' ✓':' ✗'}`)});
+    L.push('');
+  });
+  return L.join('\n');
+}
+function hcode(s){
+  s='fvl26|'+s.replace(/\s+/g,'');let a=0x811c9dc5,b=0x9e3779b9;
+  for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=Math.imul(a^c,16777619);b=Math.imul(b^c,0x5bd1e995);b^=b>>>15}
+  const h=x=>(x>>>0).toString(16).toUpperCase().padStart(8,'0');
+  return h(a).slice(0,4)+'-'+h(b).slice(4);
+}
+function repHTML(d,code,time){
+  let h=`<div class="rp"><div class="rp-head"><div><div class="label">Fraktvekt-labben · Oppdrag</div><h2>Omregningsfaktor på bil</h2></div><div class="rp-code"><span class="label">Kontrollkode</span><b class="mono">${code}</b></div></div>
+  <dl class="rp-meta"><div><dt>Navn</dt><dd>${esc(OS.navn.trim()||'–')}</dd></div><div><dt>Klasse</dt><dd>${esc(OS.klasse.trim()||'–')}</dd></div><div><dt>Startet</dt><dd>${fmtT(OS.start)}</dd></div><div><dt>Levert</dt><dd>${fmtT(time)}</dd></div></dl>
+  <div class="tiles"><div class="tile ok"><b>${d.sum.riktig}<span style="font-size:15px"> / ${d.graded.length}</span></b>Riktig uten hjelp</div><div class="tile"><b>${d.sum.hint}</b>Riktig med hint</div><div class="tile"><b>${d.sum.losning}</b>Etter løsningsforslag</div><div class="tile"><b>${d.sum.ikke}</b>Ikke fullført</div></div>
+  <div class="tablewrap"><table class="calc"><thead><tr><th>Oppgave</th><th>Status</th><th>Svar</th></tr></thead><tbody>`;
+  d.rows.filter(r=>!r.t.text).forEach(r=>h+=`<tr><td>${r.i+1}. ${esc(r.t.tittel)}</td><td>${esc(statusLine(r))}</td><td><ul class="rp-ans">${r.answers.map(a=>`<li><span class="muted">${esc(a.f.label)}:</span> ${esc(a.val)} ${a.ok==null?'':a.ok?'<span class="okc">✓</span>':'<span class="badc">✗</span>'}</li>`).join('')}</ul></td></tr>`);
+  h+='</tbody></table></div><h3>Refleksjon</h3>';
+  d.rows.filter(r=>r.t.text).forEach(r=>r.answers.forEach(a=>h+=`<p class="rp-q">${esc(a.f.label)}</p><blockquote class="rp-a">${esc(a.val)}</blockquote>`));
+  return h+'</div>';
+}
+function buildRep(){
+  const time=Date.now(),d=repData(),body=repText(d,time),code=hcode(body);
+  return {d,html:repHTML(d,code,time),text:body+'\nKontrollkode: '+code};
+}
+function renderReport(){
+  const r=buildRep(),left=r.d.sum.ikke+(status(T[T.length-1])==='levert'?0:1);
+  $('omain').innerHTML=`<div class="panel stack">
+    <div><div class="label">Innlevering</div><h2 style="margin-top:4px">Lever inn oppdraget</h2></div>
+    <p style="margin:0;max-width:65ch">Skriv inn navn og klasse. Lagre rapporten som PDF, eller kopier teksten. Lever den der læreren har bestemt, for eksempel i itslearning, Teams eller Canvas.</p>
+    <div class="settings" style="margin:0"><div class="field"><label for="rNavn">Navn</label><input id="rNavn" autocomplete="name"></div><div class="field"><label for="rKlasse">Klasse</label><input id="rKlasse"></div></div>
+    ${left?`<div class="banner bad">${left} ${left===1?'oppgave er':'oppgaver er'} ikke fullført. Du kan levere likevel, men da står det i rapporten.</div>`:'<div class="banner ok">Alle oppgavene er fullført. Godt jobbet!</div>'}
+    <div class="btnrow"><button class="btn primary" id="rPdf">Lagre som PDF / skriv ut</button><button class="btn" id="rCopy">Kopier som tekst</button><button class="btn" id="rDl">Last ned tekstfil</button></div>
+    <div id="rMsg" aria-live="polite"></div>
+  </div>
+  <div class="panel stack"><div class="label">Forhåndsvisning</div><div id="rPrev">${r.html}</div></div>
+  <div class="panel stack"><div class="btnrow"><button class="btn danger" id="rReset">Start oppdraget på nytt</button></div><p class="muted" style="margin:0;font-size:14px">Sletter alle svarene dine i denne nettleseren. Lever inn før du gjør dette.</p></div>`;
+  $('rNavn').value=OS.navn;$('rKlasse').value=OS.klasse;
+  const upd=()=>{OS.navn=$('rNavn').value;OS.klasse=$('rKlasse').value;osave();$('rPrev').innerHTML=buildRep().html};
+  $('rNavn').oninput=upd;$('rKlasse').oninput=upd;
+  const msg=(t,ok=true)=>$('rMsg').innerHTML=`<div class="banner ${ok?'ok':'bad'}">${t}</div>`;
+  const need=()=>{if(OS.navn.trim())return true;msg('Skriv inn navnet ditt først.',false);$('rNavn').focus();return false};
+  $('rPdf').onclick=()=>{
+    if(!need())return;const r=buildRep();$('printArea').innerHTML=r.html;
+    const old=document.title;document.title='Fraktvekt-rapport – '+OS.navn.trim();document.body.classList.add('pr');
+    const done=()=>{document.body.classList.remove('pr');document.title=old;window.removeEventListener('afterprint',done)};
+    window.addEventListener('afterprint',done);window.print();
+  };
+  $('rCopy').onclick=()=>{
+    if(!need())return;const t=buildRep().text;
+    const fallback=()=>{msg('Kunne ikke kopiere automatisk. Merk teksten under og kopier den selv (Ctrl+C).',false);$('rMsg').insertAdjacentHTML('beforeend',`<textarea class="ta" rows="10" readonly style="margin-top:8px">${esc(t)}</textarea>`);const ta=$('rMsg').querySelector('textarea');ta.focus();ta.select()};
+    if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>msg('Kopiert! Lim inn teksten i innleveringen.'),fallback);else fallback();
+  };
+  $('rDl').onclick=()=>{
+    if(!need())return;const t=buildRep().text,a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));
+    a.download='fraktvekt-rapport-'+(OS.navn.trim().toLowerCase().replace(/[^a-z0-9æøå]+/g,'-').replace(/^-|-$/g,'')||'elev')+'.txt';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    msg('Tekstfilen er lastet ned. Last den opp i innleveringen.');
+  };
+  $('rReset').onclick=()=>{if(!confirm('Vil du slette alle svarene og starte oppdraget på nytt?'))return;OS=Object.assign({},OS,{start:null,cur:0,t:{}});osave();renderOppdrag()};
+}
+$('verBtn').onclick=()=>{
+  const t=$('verTxt').value,m=t.match(/Kontrollkode:\s*([0-9A-F]{4}-[0-9A-F]{4})/i);
+  $('verRes').innerHTML=!m?'<div class="banner bad">Fant ingen kontrollkode i teksten.</div>'
+    :hcode(t.slice(0,m.index))===m[1].toUpperCase()?'<div class="banner ok">✓ Kontrollkoden stemmer. Teksten er ikke endret.</div>'
+    :'<div class="banner bad">✗ Kontrollkoden stemmer ikke. Teksten kan være endret etter at rapporten ble laget.</div>';
+};
+
 /* ---------- faner ---------- */
+const VIEWS=['utforsk','oppgaver','oppdrag','regler'];
 function show(v){
-  ['utforsk','oppgaver','regler'].forEach(x=>{$('view-'+x).hidden=x!==v;$('tab-'+x).setAttribute('aria-selected',x===v)});
+  VIEWS.forEach(x=>{$('view-'+x).hidden=x!==v;$('tab-'+x).setAttribute('aria-selected',x===v)});
   if(v==='oppgaver'&&taskStale){newTask();taskStale=false}
+  if(v==='oppdrag'){fromOppdrag=false;renderOppdrag()}
+  $('backBar').hidden=!(v==='utforsk'&&fromOppdrag);
   if(location.hash!=='#'+v)history.replaceState(null,'','#'+v);
 }
 document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)show(b.dataset.view)};
-window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(['utforsk','oppgaver','regler'].includes(h))show(h)});
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(VIEWS.includes(h))show(h)});
 
 renderPresets();renderLines();renderSettings();update();newTask();
-const h0=location.hash.slice(1);if(['utforsk','oppgaver','regler'].includes(h0))show(h0);
+const h0=location.hash.slice(1);if(VIEWS.includes(h0))show(h0);
 })();
 </script>
 </body>
