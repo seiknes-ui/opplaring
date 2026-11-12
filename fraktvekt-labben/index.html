@@ -208,6 +208,53 @@ fieldset.ans{margin:0;min-width:0}
 .okc{color:var(--ok);font-weight:700}.badc{color:var(--bad);font-weight:700}
 .rp-q{font-weight:600;margin:6px 0 0}
 .rp-a{margin:4px 0 8px;padding:8px 12px;border-left:4px solid var(--line);background:var(--surface-2);white-space:pre-wrap}
+/* Telefon */
+.mobbar{display:none}
+#olist{position:relative}
+@media (max-width:900px){
+  .mobbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:fixed;left:0;right:0;bottom:0;z-index:20;
+    padding:10px max(16px,env(safe-area-inset-right,0px)) max(10px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+    background:var(--surface);border-top:3px solid var(--ink);box-shadow:0 -4px 16px rgba(0,0,0,.18);transition:transform .2s ease}
+  .mobbar b{font-family:var(--f-mono);font-size:22px;line-height:1}
+  .mobbar .pill{font-size:11px}
+  .mobbar.away{transform:translateY(110%)}
+  #view-utforsk{padding-bottom:64px}
+}
+@media (max-width:640px){
+  .wrap{padding-top:12px}
+  header.top{gap:12px;padding-bottom:12px;margin-bottom:14px}
+  .stripe{width:32px;height:32px}
+  h1{font-size:26px}
+  .brand p{font-size:13px;line-height:1.35}
+  nav.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%}
+  nav.tabs button{padding:9px 2px;font-size:13px;letter-spacing:.02em}
+  .panel{padding:14px}
+  input,select,textarea{font-size:16px!important}
+  .btnrow .btn{flex:1 1 auto}
+  .seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .seg button{padding:9px 6px;border-bottom:1px solid var(--line)}
+  .taskhead{flex-direction:column;align-items:stretch}
+  .waybill table.calc thead{display:none}
+  .waybill table.calc tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 12px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .waybill table.calc tr:last-child{border-bottom:0}
+  .waybill table.calc td{border:0;padding:0;text-align:left}
+  .waybill table.calc td::before{content:attr(data-label);display:block;font-family:var(--f-display);font-stretch:85%;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .waybill td[data-label="Linje"]{display:none}
+  .waybill td[data-label="Beskrivelse"]{grid-column:1/-1;font-weight:700;font-size:16px}
+  .waybill td[data-label="Beskrivelse"]::before{display:none}
+  .waybill td[data-label="Mål L × B × H"]{grid-column:span 2}
+  .oside .intro{display:none}
+  #olist{flex-wrap:nowrap;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+  .onav{position:sticky;bottom:0;z-index:5;background:var(--surface);margin:0 -14px -14px;padding:10px 14px max(10px,env(safe-area-inset-bottom,0px));border-radius:0 0 6px 6px}
+  .otop .spill{order:-1}
+  .rp-code{text-align:left}
+}
+@media (max-width:380px){
+  nav.tabs button{font-size:11.5px;letter-spacing:0}
+  h1{font-size:23px}
+}
+@media (prefers-reduced-motion:reduce){.mobbar{transition:none}}
+
 #printArea{display:none}
 @page{margin:14mm}
 @media print{
@@ -283,6 +330,7 @@ fieldset.ans{margin:0;min-width:0}
           </div>
           <p class="why" id="why"></p>
         </div>
+        <div class="mobbar" id="mobBar" aria-hidden="true"><span class="label">Fraktberegnende</span><b id="mobFbv">0 kg</b><span id="mobPill"></span></div>
 
         <div class="panel stack">
           <h3>Volum i cm³, dm³ og m³</h3>
@@ -363,7 +411,7 @@ fieldset.ans{margin:0;min-width:0}
         <div>
           <div class="label">Oppdrag</div>
           <h3>Omregningsfaktor på bil</h3>
-          <p class="muted" style="margin:4px 0 0;font-size:14px">14 oppgaver i fire deler. Svarene lagres i nettleseren, så du kan ta pauser. Lever inn til slutt.</p>
+          <p class="muted intro" style="margin:4px 0 0;font-size:14px">14 oppgaver i fire deler. Svarene lagres i nettleseren, så du kan ta pauser. Lever inn til slutt.</p>
         </div>
         <div class="prog"><div class="track"><div class="fill" id="oprog"></div></div><span id="oprogTxt"></span></div>
         <nav id="olist" aria-label="Oppgaver i oppdraget"></nav>
@@ -618,6 +666,7 @@ function update(){
   $('fbv').textContent=kg(t.fbv);
   const pc={act:'act',vol:'vol',ldm:'ldm',mix:'mix'}[t.win];
   $('fbvPill').innerHTML=valid.length?`<span class="pill ${pc}">${t.win==='mix'?'Ulik per linje':NAMES[t.win]+' bestemmer'}</span>`:'';
+  $('mobFbv').textContent=kg(t.fbv);$('mobPill').innerHTML=$('fbvPill').innerHTML;
   // forklaring
   let why='';
   if(!valid.length)why='Legg til en varelinje for å starte.';
@@ -679,10 +728,13 @@ const HINT={
   fbv2:()=>'Linje 2 kan stables: sammenlign faktisk vekt og volumvekt.',
   sum:()=>'Legg sammen fraktberegnende vekt for linje 1 og linje 2.'
 };
+function wbRow(l,i){
+  return `<tr><td class="num" data-label="Linje">${i+1}</td><td data-label="Beskrivelse">${esc(l.navn)}</td><td class="r num" data-label="Antall">${l.n}</td><td class="num" data-label="Mål L × B × H">${l.L} × ${l.B} × ${l.H} cm</td><td class="r num" data-label="Vekt per kolli">${l.kg} kg</td><td data-label="Stablebar">${l.stack?'Ja':'Nei'}</td></tr>`;
+}
 function renderTask(){
   $('wbNo').textContent='Nr. '+task.no;
   let h='<thead><tr><th>Linje</th><th>Beskrivelse</th><th class="r">Antall</th><th>Mål L × B × H</th><th class="r">Vekt per kolli</th><th>Stablebar</th></tr></thead><tbody>';
-  task.ls.forEach((l,i)=>h+=`<tr><td class="num">${i+1}</td><td>${esc(l.navn)}</td><td class="r num">${l.n}</td><td class="num">${l.L} × ${l.B} × ${l.H} cm</td><td class="r num">${l.kg} kg</td><td>${l.stack?'Ja':'Nei'}</td></tr>`);
+  task.ls.forEach((l,i)=>h+=wbRow(l,i));
   $('taskTable').innerHTML=h+'</tbody>';
   $('taskInfo').textContent=level===0?'Husk: 1 m³ = 1000 dm³ = 1 000 000 cm³. Skriv svarene uten avrunding.':`Omregningsfaktor: 1:${fx(task.o.fm3)}${task.vary?'':` (1 m³ = ${fk(task.o.fm3)} kg)`}${level>1?`, 1 lastemeter = ${task.o.fldm} kg, bilbredde ${nf(task.o.br,1)} m`:''}. Rund kg til hele tall.`;
   $('answers').innerHTML=task.fields.map(f=>`<div class="ans" data-k="${f.k}"><label for="a-${f.k}">${f.label}</label><div class="inrow"><input id="a-${f.k}" inputmode="decimal" autocomplete="off"><span class="unit">${f.unit}</span></div><div class="fb" aria-live="polite"></div></div>`).join('');
@@ -863,7 +915,7 @@ function numFb(f,v){
 }
 function waybillHTML(ls,no){
   let h=`<div class="waybill"><div class="wb-top"><span>Fraktbrev</span><span>${no}</span></div><div class="tablewrap"><table class="calc"><thead><tr><th>Linje</th><th>Beskrivelse</th><th class="r">Antall</th><th>Mål L × B × H</th><th class="r">Vekt per kolli</th><th>Stablebar</th></tr></thead><tbody>`;
-  ls.forEach((l,i)=>h+=`<tr><td class="num">${i+1}</td><td>${esc(l.navn)}</td><td class="r num">${l.n}</td><td class="num">${l.L} × ${l.B} × ${l.H} cm</td><td class="r num">${l.kg} kg</td><td>${l.stack?'Ja':'Nei'}</td></tr>`);
+  ls.forEach((l,i)=>h+=wbRow(l,i));
   return h+'</tbody></table></div></div>';
 }
 function fieldHTML(f,s){
@@ -883,6 +935,8 @@ function renderOList(){
   const done=T.filter(t=>OS.t[t.id]&&OS.t[t.id].done).length;
   $('oprog').style.width=done/T.length*100+'%';
   $('oprogTxt').textContent=`${done} av ${T.length} fullført`;
+  const cur=$('olist').querySelector('[aria-current="true"]'),ol=$('olist');
+  if(cur&&ol.scrollWidth>ol.clientWidth)ol.scrollLeft=cur.offsetLeft-ol.clientWidth/2+cur.offsetWidth/2;
 }
 function goO(i){
   OS.cur=(i==='rapport'||i>=T.length)?'rapport':Math.max(0,i);osave();renderOppdrag();
@@ -1063,6 +1117,9 @@ function show(v){
 }
 document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)show(b.dataset.view)};
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(VIEWS.includes(h))show(h)});
+
+// Skjul resultatlinjen på telefon når selve resultatpanelet er synlig
+if('IntersectionObserver' in window)new IntersectionObserver(es=>es.forEach(e=>$('mobBar').classList.toggle('away',e.isIntersecting))).observe($('fbv').closest('.panel'));
 
 renderPresets();renderLines();renderSettings();update();newTask();
 const h0=location.hash.slice(1);if(VIEWS.includes(h0))show(h0);
