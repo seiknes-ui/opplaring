@@ -190,7 +190,14 @@ svg .over{fill:var(--bad);opacity:.12}
 fieldset.ans{margin:0;min-width:0}
 .ans legend{float:left;width:100%;padding:0;margin-bottom:6px;font-size:14px;font-weight:600}
 .ans legend+*{clear:both}
-.opt{display:flex;gap:8px;align-items:flex-start;font-size:15px;padding:3px 0;cursor:pointer}
+.opt{display:flex;gap:8px;align-items:flex-start;font-size:15px;padding:5px 8px;margin:0 -8px;border:2px solid transparent;border-radius:6px;cursor:pointer}
+.opt+.opt{margin-top:2px}
+.opt .merke{margin-left:auto;padding-left:10px;font-size:13px;font-weight:700;white-space:nowrap}
+.opt.fasit{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,transparent);font-weight:600}
+.opt.fasit .merke{color:var(--ok)}
+.opt.feilvalg{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.opt.feilvalg>span:not(.merke){text-decoration:line-through;text-decoration-color:var(--bad)}
+.opt.feilvalg .merke{color:var(--bad)}
 .ans .opt input{flex:none;width:18px;height:18px;margin:3px 0 0;padding:0;accent-color:var(--c-act)}
 .hintbox{border-left:4px solid var(--accent);background:var(--surface-2);padding:10px 14px;border-radius:4px}
 .onav{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:14px}
@@ -946,7 +953,24 @@ $('olist').onclick=e=>{const b=e.target.closest('[data-i]');if(b)goO(+b.dataset.
 $('toReport').onclick=()=>goO('rapport');
 function renderOppdrag(){renderOList();if(OS.cur==='rapport')renderReport();else renderOTask()}
 
+// Etter sjekk: riktig valg grønt, feil valg rødt. Når oppgaven er løst eller løsningen er vist, markeres riktig alternativ alltid.
+function markChoices(t,s){
+  const vis=s.done||s.solSeen;
+  t.fields.forEach(f=>{
+    if(f.type!=='choice')return;
+    const box=$('omain').querySelector(`.ans[data-k="${f.k}"]`);
+    box.querySelectorAll('.opt').forEach((o,i)=>{
+      const valgt=String(s.ans[f.k])===String(i),fasit=i===f.ans&&(vis||!!s.res&&s.res[f.k]&&valgt),feil=!!s.res&&!s.res[f.k]&&valgt&&i!==f.ans;
+      o.classList.toggle('fasit',fasit);o.classList.toggle('feilvalg',feil);
+      let m=o.querySelector('.merke');
+      if(!fasit&&!feil){if(m)m.remove();return}
+      if(!m){m=document.createElement('span');m.className='merke';o.append(m)}
+      m.textContent=fasit?'✓ Riktig svar':'✗ Feil';
+    });
+  });
+}
 function applyFb(t,s){
+  markChoices(t,s);
   if(!s.res){$('oBanner').innerHTML='';return}
   let n=0;
   t.fields.forEach(f=>{
@@ -982,7 +1006,7 @@ function renderOTask(){
   </div>`;
   applyFb(t,s);
   const form=$('oForm');
-  const onIn=e=>{const box=e.target.closest('.ans');if(!box)return;s.ans[box.dataset.k]=e.target.value;if(!OS.start)OS.start=Date.now();osave();renderOList()};
+  const onIn=e=>{const box=e.target.closest('.ans');if(!box)return;s.ans[box.dataset.k]=e.target.value;box.querySelectorAll(s.done||s.solSeen?'.feilvalg':'.feilvalg,.fasit').forEach(o=>{o.classList.remove('feilvalg','fasit');o.querySelector('.merke')?.remove()});if(!OS.start)OS.start=Date.now();osave();renderOList()};
   form.addEventListener('input',onIn);form.addEventListener('change',onIn);
   form.addEventListener('submit',e=>{
     e.preventDefault();s.att++;if(!OS.start)OS.start=Date.now();
@@ -996,7 +1020,7 @@ function renderOTask(){
   if($('oHint'))$('oHint').onclick=()=>{s.hintSeen=true;if(!s.done)s.hint=true;osave();$('oHintBox').hidden=false};
   if($('oSol'))$('oSol').onclick=()=>{
     if(!s.done&&!s.sol&&!confirm('Løsningsforslaget blir registrert i rapporten din. Vil du se det?'))return;
-    s.solSeen=true;if(!s.done)s.sol=true;osave();
+    s.solSeen=true;if(!s.done)s.sol=true;osave();markChoices(t,s);
     $('oSolBox').querySelector('.tablewrap').innerHTML=t.los();$('oSolBox').hidden=false;
   };
   if($('oExp'))$('oExp').onclick=()=>loadExplore(t.ls,O3);
