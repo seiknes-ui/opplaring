@@ -311,6 +311,26 @@ fieldset.ans{margin:0;min-width:0}
             <div class="chips" id="presets" style="margin-top:8px"></div>
           </div>
         </div>
+        <div class="panel stack" id="ownPanelU">
+          <div>
+            <h3>Lag din egen varelinje</h3>
+            <p class="muted" style="margin:4px 0 0;font-size:14px">Skriv inn antall esker, mål og vekt, for eksempel fra en ekte sending. Legg linjen til sendingen, eller bruk bare denne linjen.</p>
+          </div>
+          <div class="fields">
+            <div class="field" style="grid-column:1/-1"><label for="uNavn">Beskrivelse</label><input id="uNavn" data-o="navn" maxlength="60"></div>
+            <div class="field"><label for="uL">Lengde (cm)</label><input type="text" autocomplete="off" id="uL" data-o="L" min="1" step="any" inputmode="decimal"></div>
+            <div class="field"><label for="uB">Bredde (cm)</label><input type="text" autocomplete="off" id="uB" data-o="B" min="1" step="any" inputmode="decimal"></div>
+            <div class="field"><label for="uH">Høyde (cm)</label><input type="text" autocomplete="off" id="uH" data-o="H" min="1" step="any" inputmode="decimal"></div>
+            <div class="field"><label for="uN">Antall kolli</label><input type="text" autocomplete="off" id="uN" data-o="n" min="1" step="1" inputmode="numeric"></div>
+            <div class="field" style="grid-column:span 2"><label for="uKg">Vekt per kolli (kg)</label><input type="text" autocomplete="off" id="uKg" data-o="kg" min="0.1" step="any" inputmode="decimal"></div>
+          </div>
+          <label class="check"><input type="checkbox" id="uStack" data-o="stack"> Kan stables</label>
+          <p id="ownErrU" style="color:var(--bad);margin:0" hidden></p>
+          <div class="btnrow">
+            <button class="btn primary" type="button" id="ownOnly">Bruk bare denne linjen</button>
+            <button class="btn" type="button" id="ownAdd">+ Legg til i sendingen</button>
+          </div>
+        </div>
         <div class="panel stack">
           <div class="label">Omregningsfaktorer</div>
           <div class="slider"><label for="fxF">Faktor 1 :</label><input type="range" id="fxF" min="1" max="6" step="0.1"><output id="fxFo"></output></div>
@@ -399,11 +419,11 @@ fieldset.ans{margin:0;min-width:0}
         </div>
         <div class="fields">
           <div class="field" style="grid-column:1/-1"><label for="ownNavn">Beskrivelse</label><input id="ownNavn" data-o="navn" maxlength="60"></div>
-          <div class="field"><label for="ownL">Lengde (cm)</label><input type="number" id="ownL" data-o="L" min="1" step="any" inputmode="decimal"></div>
-          <div class="field"><label for="ownB">Bredde (cm)</label><input type="number" id="ownB" data-o="B" min="1" step="any" inputmode="decimal"></div>
-          <div class="field"><label for="ownH">Høyde (cm)</label><input type="number" id="ownH" data-o="H" min="1" step="any" inputmode="decimal"></div>
-          <div class="field"><label for="ownN">Antall kolli</label><input type="number" id="ownN" data-o="n" min="1" step="1" inputmode="numeric"></div>
-          <div class="field" style="grid-column:span 2"><label for="ownKg">Vekt per kolli (kg)</label><input type="number" id="ownKg" data-o="kg" min="0.1" step="any" inputmode="decimal"></div>
+          <div class="field"><label for="ownL">Lengde (cm)</label><input type="text" autocomplete="off" id="ownL" data-o="L" min="1" step="any" inputmode="decimal"></div>
+          <div class="field"><label for="ownB">Bredde (cm)</label><input type="text" autocomplete="off" id="ownB" data-o="B" min="1" step="any" inputmode="decimal"></div>
+          <div class="field"><label for="ownH">Høyde (cm)</label><input type="text" autocomplete="off" id="ownH" data-o="H" min="1" step="any" inputmode="decimal"></div>
+          <div class="field"><label for="ownN">Antall kolli</label><input type="text" autocomplete="off" id="ownN" data-o="n" min="1" step="1" inputmode="numeric"></div>
+          <div class="field" style="grid-column:span 2"><label for="ownKg">Vekt per kolli (kg)</label><input type="text" autocomplete="off" id="ownKg" data-o="kg" min="0.1" step="any" inputmode="decimal"></div>
         </div>
         <label class="check"><input type="checkbox" id="ownStack" data-o="stack"> Kan stables</label>
         <p id="ownErr" style="color:var(--bad);margin:0" hidden></p>
@@ -734,10 +754,10 @@ function mkPallet(stack){const p=pick(PALLETS),t=TYPES[p.t];return{navn:p.navn,t
 const OWN_DEF={navn:'Mine esker',n:10,L:60,B:40,H:40,kg:8,stack:true};
 let own=Object.assign({},OWN_DEF,store.get('fvl-egen',{}));
 function renderOwn(){
-  document.querySelectorAll('#ownPanel [data-o]').forEach(el=>{const k=el.dataset.o;if(el.type==='checkbox')el.checked=!!own[k];else el.value=own[k]});
+  document.querySelectorAll('#ownPanel [data-o], #ownPanelU [data-o]').forEach(el=>{const k=el.dataset.o;if(el.type==='checkbox')el.checked=!!own[k];else el.value=typeof own[k]==='number'?String(own[k]).replace('.',','):own[k]});
 }
-function readOwn(){
-  const g=k=>$('ownPanel').querySelector(`[data-o="${k}"]`);
+function readOwn(p=$('ownPanel')){
+  const g=k=>p.querySelector(`[data-o="${k}"]`);
   const l={navn:g('navn').value.trim()||'Egen varelinje',type:'egen',stack:g('stack').checked};
   const err=[];
   const num=(k,navn,min,max,heltall)=>{const v=pnum(g(k).value);
@@ -752,9 +772,22 @@ $('ownMake').onclick=()=>{
   const {l,err}=readOwn();
   $('ownErr').hidden=!err.length;$('ownErr').textContent=err.join(' ');
   if(err.length)return;
-  own=l;store.set('fvl-egen',own);newTask();
+  own=l;store.set('fvl-egen',own);renderOwn();newTask();
   $('taskTable').closest('.panel').scrollIntoView({behavior:'smooth',block:'start'});
 };
+
+// Utforsk: samme skjema, legger linjen inn i sendingen
+function ownToExplore(only){
+  const {l,err}=readOwn($('ownPanelU'));
+  $('ownErrU').hidden=!err.length;$('ownErrU').textContent=err.join(' ');
+  if(err.length)return;
+  own=l;store.set('fvl-egen',own);renderOwn();
+  const ny=Object.assign({},own,{id:uid++});
+  lines=only?[ny]:lines.concat(ny);renderLines();update();
+  const card=document.querySelector(`#lines .line[data-id="${ny.id}"]`);if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('ownOnly').onclick=()=>ownToExplore(true);
+$('ownAdd').onclick=()=>ownToExplore(false);
 
 let level=1, task=null, score=store.get('fvl-score',{ok:0,tot:0}), counted=false;
 function newTask(){
