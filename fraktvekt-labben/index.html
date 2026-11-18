@@ -547,9 +547,11 @@ fieldset.ans{margin:0;min-width:0}
       </div>
     </div>
   </section>
+  <p class="muted" style="font-size:13px;margin:24px 0 0">Svar i Oppgaver og Oppdrag og bruk av Utforsk sendes anonymt til læreren for å forbedre opplæringen. Navn og tekstsvar sendes ikke.</p>
 </div>
 <div id="printArea"></div>
 
+<script src="https://seiknes-ui.github.io/simmulator/kvalitet/kvalitet.js"></script>
 <script>
 (function(){
 const DEF={fm3:333,fldm:1850,br:2.4};
@@ -579,6 +581,45 @@ const m=cm=>nf(cm/100,2).replace(/,?0+$/,'').replace(/,$/,'');
 const pnum=s=>{if(s==null)return NaN;s=String(s).trim().replace(/\s/g,'').replace(',','.');return s===''?NaN:Number(s)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const NAMES={act:'Faktisk vekt',vol:'Volumvekt',ldm:'Lastemetervekt'};
+
+/* ---------- kvalitet ---------- */
+// Anonym logg til kvalitetsdelen (se simmulator/kvalitet/kvalitet.js). Ingen navn, ingen fritekst.
+function kv(hd,d){try{if(window.Kvalitet)Kvalitet.logg('fraktvekt',hd,d)}catch(e){}}
+// Gjetter hvilken feil eleven har gjort, ut fra tallet som ble skrevet inn.
+function feiltype(f,v,c,l){
+  if(isNaN(v))return 'tomt';
+  const a=f.ans,tol=x=>Math.max(f.unit==='ldm'?0.015:2,Math.abs(x)*0.01),near=x=>x!=null&&x>0&&Math.abs(v-x)<=tol(x)&&Math.abs(x-a)>tol(a);
+  if(c&&f.unit==='kg'){
+    if(near(c.act))return 'tok faktisk vekt';
+    if(near(c.volkg))return 'tok volumvekt';
+    if(near(c.ldmkg))return 'tok lastemetervekt';
+    if(/volkg|fbv|^f\d|^g\d|^sum$/.test(f.k)){if(near(c.vol))return 'glemt omregningsfaktoren';if([1000/3,1000/3.5,250,200,1000/6,1000].some(x=>near(c.vol*x)))return 'feil omregningsfaktor'}
+    if(/ldmkg/.test(f.k)&&near(c.ldm))return 'glemt kg per lastemeter';
+  }
+  if(c&&f.unit==='ldm'&&near(c.ldm*S.br))return 'ikke delt på bilbredden';
+  if(l&&l.n>1&&near(a/l.n))return 'glemt antall kolli';
+  const r=v/a;
+  for(const [x,t] of [[1000,'1000 × for stort'],[1e-3,'1000 × for lite'],[1e6,'en million × for stort'],[1e-6,'en million × for lite'],[1e4,'10 000 × for stort'],[1e-4,'10 000 × for lite'],[100,'100 × for stort'],[0.01,'100 × for lite'],[10,'10 × for stort'],[0.1,'10 × for lite']])
+    if(Math.abs(r/x-1)<0.02)return t;
+  return 'annet';
+}
+function kvOppgave(all){
+  task.fields.forEach(f=>{
+    const v=pnum(document.querySelector(`.ans[data-k="${f.k}"] input`).value),good=ok(f,v);
+    const l=f.k==='sum'?null:task.ls[f.k==='fbv2'?1:0],c=l?calcLine(l,task.o):null;
+    kv(good?'riktig':'feil',{k:'n'+level+'.'+f.k,t:'Nivå '+level+': '+f.label,a:good?'':feiltype(f,v,c,l),m:'oppgaver'});
+  });
+  kv('oppgave',{k:'nivå '+level,a:all?'riktig':'feil'});
+}
+function kvOppdrag(t,s){
+  const l=t.ls&&t.ls.length===1?t.ls[0]:null,c=l?cl(l):null;
+  t.fields.forEach(f=>{
+    if(f.type==='text')return;
+    const good=!!s.res[f.k],v=s.ans[f.k];
+    const a=good?'':f.type==='choice'?(isEmpty(v)?'(ubesvart)':f.options[+v]):feiltype(f,pnum(v),c,l);
+    kv(good?'riktig':'feil',{k:t.id+'.'+f.k,t:t.tittel+': '+f.label,a,m:'oppdrag'});
+  });
+}
 
 /* ---------- beregning ---------- */
 function calcLine(l,o=S){
@@ -666,7 +707,7 @@ function truckSVG(ls){
 const $=id=>document.getElementById(id);
 function renderPresets(){
   $('presets').innerHTML=PRESETS.map((p,i)=>`<button class="chip" data-p="${i}">${esc(p.navn)}</button>`).join('');
-  $('presets').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;lines=JSON.parse(JSON.stringify(PRESETS[b.dataset.p].lines));lines.forEach(l=>l.id=uid++);renderLines();update()};
+  $('presets').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;kv('bruk',{k:'eksempelsending',a:PRESETS[b.dataset.p].navn});lines=JSON.parse(JSON.stringify(PRESETS[b.dataset.p].lines));lines.forEach(l=>l.id=uid++);renderLines();update()};
 }
 function lineHTML(l,i){
   const opt=Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${l.type===k?'selected':''}>${v.navn}</option>`).join('');
@@ -773,6 +814,7 @@ $('ownMake').onclick=()=>{
   $('ownErr').hidden=!err.length;$('ownErr').textContent=err.join(' ');
   if(err.length)return;
   own=l;store.set('fvl-egen',own);renderOwn();newTask();
+  kv('bruk',{k:'egen linje i Oppgaver',m:own.stack?'stablebar':'ikke stablebar'});
   $('taskTable').closest('.panel').scrollIntoView({behavior:'smooth',block:'start'});
 };
 
@@ -782,6 +824,7 @@ function ownToExplore(only){
   $('ownErrU').hidden=!err.length;$('ownErrU').textContent=err.join(' ');
   if(err.length)return;
   own=l;store.set('fvl-egen',own);renderOwn();
+  kv('bruk',{k:'egen linje i Utforsk',a:only?'bare denne':'lagt til',m:own.stack?'stablebar':'ikke stablebar'});
   const ny=Object.assign({},own,{id:uid++});
   lines=only?[ny]:lines.concat(ny);renderLines();update();
   const card=document.querySelector(`#lines .line[data-id="${ny.id}"]`);if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -850,11 +893,12 @@ $('taskForm').addEventListener('submit',e=>{
     box.querySelector('.fb').textContent=good?'✓ Riktig':(isNaN(v)?'Skriv inn et tall. ':'✗ Ikke helt. ')+HINT[f.k]();
     if(!good)all=false;
   });
+  if(!counted)kvOppgave(all);
   if(!counted){score.tot++;if(all)score.ok++;counted=true;store.set('fvl-score',score)}
   $('taskBanner').innerHTML=all?'<div class="banner ok">Alt riktig. Trykk «Ny oppgave» for å fortsette.</div>':'<div class="banner bad">Noen svar er feil. Les hintene og prøv igjen.</div>';
   $('score').textContent=`Riktige oppgaver: ${score.ok} av ${score.tot}`;
 });
-$('showSol').onclick=()=>{$('solSteps').innerHTML=level===0?unitsHTML(task.ls):stepsHTML(task.ls,task.o);$('solution').hidden=false;if(!counted){score.tot++;counted=true;store.set('fvl-score',score);$('score').textContent=`Riktige oppgaver: ${score.ok} av ${score.tot}`}};
+$('showSol').onclick=()=>{if(!counted)kv('oppgave',{k:'nivå '+level,a:'løsning'});$('solSteps').innerHTML=level===0?unitsHTML(task.ls):stepsHTML(task.ls,task.o);$('solution').hidden=false;if(!counted){score.tot++;counted=true;store.set('fvl-score',score);$('score').textContent=`Riktige oppgaver: ${score.ok} av ${score.tot}`}};
 $('newTask').onclick=newTask;
 $('varyF').onchange=newTask;
 $('toExplore').onclick=()=>{if(task.o.fm3!==S.fm3){S.fm3=task.o.fm3;store.set('fvl-set',S);renderSettings();taskStale=true}lines=JSON.parse(JSON.stringify(task.ls));lines.forEach(l=>l.id=uid++);renderLines();update();show('utforsk')};
@@ -877,7 +921,7 @@ let taskStale=false;
 function applySettings(){store.set('fvl-set',S);renderSettings();update();taskStale=true;if(!$('view-oppgaver').hidden){newTask();taskStale=false}}
 [['setFm3','fm3'],['setFldm','fldm'],['setBr','br'],['fxM3','fm3'],['fxLdm','fldm']].forEach(([id,k])=>$(id).addEventListener('input',e=>{const v=pnum(e.target.value);if(v>0){S[k]=v;applySettings()}}));
 ['setF','fxF'].forEach(id=>$(id).addEventListener('input',e=>{const v=pnum(e.target.value);if(v>0){S.fm3=fmOf(v);applySettings()}}));
-$('fxPresets').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;S.fm3=fmOf(+b.dataset.f);if(b.dataset.fldm)S.fldm=+b.dataset.fldm;applySettings()};
+$('fxPresets').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;kv('bruk',{k:'omregningsfaktor',a:'1:'+b.dataset.f});S.fm3=fmOf(+b.dataset.f);if(b.dataset.fldm)S.fldm=+b.dataset.fldm;applySettings()};
 $('resetSet').onclick=()=>{S=Object.assign({},DEF);applySettings()};
 
 /* ---------- oppdrag ---------- */
@@ -1100,15 +1144,17 @@ function renderOTask(){
   form.addEventListener('submit',e=>{
     e.preventDefault();s.att++;if(!OS.start)OS.start=Date.now();
     s.res={};t.fields.forEach(f=>s.res[f.k]=fieldOk(f,s.ans[f.k]));
+    if(s.att===1)kvOppdrag(t,s);
     const all=Object.values(s.res).every(Boolean);
     if(all&&!s.done)s.doneAt=Date.now();
     s.done=all;osave();renderOppdrag();
     const b=$('oBanner').firstElementChild;if(b)b.focus();
   });
   $('oBanner').onclick=e=>{if(e.target.closest('[data-next]'))goO(i+1)};
-  if($('oHint'))$('oHint').onclick=()=>{s.hintSeen=true;if(!s.done)s.hint=true;osave();$('oHintBox').hidden=false};
+  if($('oHint'))$('oHint').onclick=()=>{if(!s.hintSeen)kv('hjelp',{k:t.id,t:t.tittel,a:'hint'});s.hintSeen=true;if(!s.done)s.hint=true;osave();$('oHintBox').hidden=false};
   if($('oSol'))$('oSol').onclick=()=>{
     if(!s.done&&!s.sol&&!confirm('Løsningsforslaget blir registrert i rapporten din. Vil du se det?'))return;
+    if(!s.solSeen)kv('hjelp',{k:t.id,t:t.tittel,a:'løsning'});
     s.solSeen=true;if(!s.done)s.sol=true;osave();markChoices(t,s);
     $('oSolBox').querySelector('.tablewrap').innerHTML=t.los();$('oSolBox').hidden=false;
   };

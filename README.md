@@ -9,7 +9,7 @@ Interaktiv simulering for Vg2 transport og logistikk. Elevene utforsker omregnin
 - faktisk vekt, volumvekt og lastemetervekt
 - omregning mellom cm³, dm³ og m³
 - omregningsfaktor som enkelt tall (1:3, 1:3,5, 1:4, 1:5 osv.)
-- oppgaver på fire nivåer med tilbakemelding og løsning
+- oppgaver på fem nivåer med tilbakemelding og løsning, blant annet en egen varelinje der eleven selv legger inn antall, mål og vekt (også i Utforsk)
 - **Oppdrag**: 14 faste oppgaver i fire deler (volumenheter, omregningsfaktor, lastemeter, hele sendingen) med hint, løsningsforslag, utforskningsoppgaver og refleksjon
 - innlevering: eleven lager en rapport (PDF eller tekst) med svar, antall forsøk og om hint eller løsning er brukt, og leverer den i læringsplattformen. Rapporten har en kontrollkode som læreren kan sjekke under Regler
 
@@ -17,4 +17,6 @@ Interaktiv simulering for Vg2 transport og logistikk. Elevene utforsker omregnin
 
 Med GitHub Pages slått på: https://seiknes-ui.github.io/opplaring/fraktvekt-labben/
 
-Siden er én HTML-fil uten byggesteg. Innstillinger og poeng lagres bare i elevens egen nettleser.
+Siden er én HTML-fil uten byggesteg. Innstillinger, poeng og svar lagres i elevens egen nettleser.
+
+Siden er koblet til kvalitetsdelen i Taktlinja (https://black-coast-081791b1e.1.azurestaticapps.net/kvalitet.html). Den sender anonymt om svarene i Oppgaver og Oppdrag var riktige, hvilken feil labben tror eleven har gjort (for eksempel «1000 × for stort»), bruk av hint og løsning, og hvilke eksempler og faktorer som brukes i Utforsk. Navn, klasse og tekstsvar sendes ikke.
